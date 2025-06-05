@@ -1,55 +1,52 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
-    .section { margin-bottom: 20px; }
-    .radio-group label { display: block; }
-    button { padding: 10px 20px; }
+    body {
+      font-family: sans-serif;
+      padding: 20px;
+    }
+    .section {
+      margin-bottom: 15px;
+    }
+    .radio-group label {
+      display: block;
+    }
+    #formSection {
+      display: none;
+    }
   </style>
 </head>
 <body>
+  <h2>性能カスタム記録フォーム</h2>
 
-  <h1>性能カスタム記録フォーム</h1>
-
-  <div id="login-box">
+  <div id="loginSection">
     <div id="g_id_onload"
-         data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
-         data-callback="onSignIn"
-         data-auto_prompt="false">
+      data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+      data-context="signin"
+      data-ux_mode="popup"
+      data-callback="handleCredentialResponse"
+      data-auto_prompt="false">
     </div>
+
     <div class="g_id_signin"
-         data-type="standard"
-         data-size="large"
-         data-theme="outline"
-         data-text="sign_in_with"
-         data-shape="rectangular"
-         data-logo_alignment="left">
+      data-type="standard"
+      data-size="large"
+      data-theme="outline"
+      data-text="sign_in_with"
+      data-shape="rectangular"
+      data-logo_alignment="left">
     </div>
   </div>
 
-  <div id="form-box" style="display:none;">
+  <div id="formSection">
+    <p>ようこそ、<span id="userName"></span> さん</p>
     <form id="customForm">
+      <input type="hidden" name="名前" id="名前">
 
-      <div class="section">
-        <label for="userName">記録者名</label>
-        <select name="userName" id="userName" required></select>
-      </div>
-
-      <div class="section">
-        <label for="vehicleNumber">車両番号</label>
-        <input type="text" name="vehicleNumber" id="vehicleNumber" required>
-      </div>
-
-      <div class="section">
-        <label for="ownerName">オーナー名</label>
-        <input type="text" name="ownerName" id="ownerName" required>
-      </div>
-
-      <!-- 性能パーツ入力 -->
       <div class="section">
         <label>エンジン</label>
         <div class="radio-group">
@@ -101,63 +98,40 @@
   </div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyT8DiQ3HDADEsDzptcA_i4k116fYfszL1IBMSfTq-7jOAMOLbWg-QDsoo8EcK3AJ3T/exec";
-    let userEmail = "";
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec';
 
-    function onSignIn(response) {
-      const id_token = response.credential;
-      const payload = JSON.parse(atob(id_token.split(".")[1]));
-      userEmail = payload.email;
+    function handleCredentialResponse(response) {
+      const token = response.credential;
+      const payload = JSON.parse(atob(token.split('.')[1]));
+      const email = payload.email;
 
-      fetch(`${GAS_URL}?email=${encodeURIComponent(userEmail)}`)
+      fetch(`${GAS_URL}?email=${email}`)
         .then(res => res.json())
         .then(data => {
-          if (!data.allowed) {
+          if (data.allowed) {
+            document.getElementById("userName").textContent = data.name;
+            document.getElementById("名前").value = data.name;
+            document.getElementById("loginSection").style.display = "none";
+            document.getElementById("formSection").style.display = "block";
+          } else {
             alert("アクセス権がありません");
-            return;
           }
-
-          const userSelect = document.getElementById("userName");
-          userSelect.innerHTML = "";
-
-          data.names.forEach(name => {
-            const option = document.createElement("option");
-            option.value = option.textContent = name;
-            if (name === data.defaultName) option.selected = true;
-            userSelect.appendChild(option);
-          });
-
-          document.getElementById("login-box").style.display = "none";
-          document.getElementById("form-box").style.display = "block";
         });
     }
 
-    document.getElementById("customForm").addEventListener("submit", function(e) {
+    document.getElementById("customForm").addEventListener("submit", function (e) {
       e.preventDefault();
       const formData = new FormData(this);
-      const obj = {};
-      formData.forEach((value, key) => {
-        if (obj[key]) {
-          if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
-          obj[key].push(value);
-        } else {
-          obj[key] = value;
-        }
-      });
-
       fetch(GAS_URL, {
         method: "POST",
-        body: JSON.stringify(obj),
-        headers: { "Content-Type": "application/json" }
+        body: formData,
       })
-        .then(res => res.text())
-        .then(text => {
-          alert("送信が完了しました！");
-          document.getElementById("customForm").reset();
-        })
-        .catch(err => alert("送信エラー: " + err));
+        .then((res) => res.text())
+        .then((text) => {
+          alert("送信されました！");
+          this.reset();
+        });
     });
   </script>
-
 </body>
 </html>

@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>性能カスタム記録フォーム</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body { font-family: Arial; padding: 20px; }
+    label { display: block; margin-top: 10px; }
+  </style>
+</head>
+<body>
+  <h1>性能カスタム記録フォーム</h1>
+  <div id="g_id_onload"
+       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+       data-callback="onSignIn"
+       data-auto_prompt="false">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <form id="recordForm" style="display:none;">
+    <label>名前:
+      <select id="name" required></select>
+    </label>
+    <label>車両番号:
+      <input type="text" id="carNumber" required />
+    </label>
+    <label>オーナー:
+      <input type="text" id="owner" required />
+    </label>
+    <label>性能内容:
+      <textarea id="performance" required></textarea>
+    </label>
+    <button type="submit">送信</button>
+  </form>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
+    let userEmail = '';
+    let allowedNames = [];
+
+    async function onSignIn(response) {
+      const credential = response.credential;
+      const payload = JSON.parse(atob(credential.split('.')[1]));
+      userEmail = payload.email;
+
+      // Googleログイン成功後にスプレッドシートからユーザー名取得
+      await fetchNames(userEmail);
+    }
+
+    async function fetchNames(email) {
+      const res = await fetch("https://sheets.googleapis.com/v4/spreadsheets/1cqfFkVK_HvhbidE2Myks-YCiFE-sNVncIS2DcejazMQ/values/ユーザー管理!A2:B100?key=YOUR_API_KEY");
+      const data = await res.json();
+      allowedNames = data.values.filter(row => row[0] === email).map(row => row[1]);
+
+      if (allowedNames.length === 0) {
+        alert("許可されていないユーザーです。");
+        return;
+      }
+
+      const nameSelect = document.getElementById('name');
+      allowedNames.forEach(name => {
+        const opt = document.createElement('option');
+        opt.value = opt.textContent = name;
+        nameSelect.appendChild(opt);
+      });
+
+      document.getElementById('recordForm').style.display = 'block';
+    }
+
+    document.getElementById("recordForm").addEventListener("submit", async function (e) {
+      e.preventDefault();
+
+      const payload = {
+        email: userEmail,
+        selectedName: document.getElementById('name').value,
+        carNumber: document.getElementById('carNumber').value,
+        owner: document.getElementById('owner').value,
+        performance: document.getElementById('performance').value,
+      };
+
+      try {
+        const res = await fetch(GAS_URL + '?origin=' + location.origin, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(payload),
+        });
+
+        const result = await res.json();
+        if (result.success) {
+          alert("記録が完了しました！");
+          e.target.reset();
+        } else {
+          alert("エラー: " + result.message);
+        }
+      } catch (err) {
+        alert("通信エラー: " + err.message);
+      }
+    });
+  </script>
+</body>
+</html>

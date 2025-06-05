@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>性能カスタム記録フォーム</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    .section { margin-bottom: 20px; }
+    .radio-group label { margin-right: 10px; }
+  </style>
+</head>
+<body>
+  <h1>性能カスタム記録フォーム</h1>
+
+  <div id="g_id_onload"
+       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+       data-callback="onSignIn"
+       data-auto_prompt="false">
+  </div>
+  <div class="g_id_signin"
+       data-type="standard"
+       data-size="large"
+       data-theme="outline"
+       data-text="sign_in_with"
+       data-shape="rectangular"
+       data-logo_alignment="left">
+  </div>
+
+  <div id="form-container" style="display:none;">
+    <form id="customForm">
+      <div class="section">
+        <label for="owner">オーナー名</label>
+        <select id="owner" name="オーナー" required></select>
+      </div>
+
+      <div class="section">
+        <label for="carNumber">車両番号</label>
+        <input type="text" id="carNumber" name="車両番号" required />
+      </div>
+
+      <!-- エンジン -->
+      <div class="section">
+        <label>エンジン</label>
+        <div class="radio-group">
+          <label><input type="radio" name="エンジン" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="エンジン" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="エンジン" value="ティア3"> ティア3</label>
+          <label><input type="radio" name="エンジン" value="ティア4"> ティア4</label>
+          <label><input type="radio" name="エンジン" value="ティア5"> ティア5</label>
+        </div>
+      </div>
+
+      <!-- ブレーキ -->
+      <div class="section">
+        <label>ブレーキ</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ブレーキ" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="ブレーキ" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="ブレーキ" value="ティア3"> ティア3</label>
+        </div>
+      </div>
+
+      <!-- トランスミッション -->
+      <div class="section">
+        <label>トランスミッション</label>
+        <div class="radio-group">
+          <label><input type="radio" name="トランスミッション" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="トランスミッション" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="トランスミッション" value="ティア3"> ティア3</label>
+          <label><input type="radio" name="トランスミッション" value="ティア4"> ティア4</label>
+        </div>
+      </div>
+
+      <!-- サスペンション -->
+      <div class="section">
+        <label>サスペンション</label>
+        <div class="radio-group">
+          <label><input type="radio" name="サスペンション" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="サスペンション" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="サスペンション" value="ティア3"> ティア3</label>
+          <label><input type="radio" name="サスペンション" value="ティア4"> ティア4</label>
+          <label><input type="radio" name="サスペンション" value="ティア5"> ティア5</label>
+        </div>
+      </div>
+
+      <!-- チェックボックス -->
+      <div class="section">
+        <label><input type="checkbox" name="アーマー" value="ON"> アーマー</label><br>
+        <label><input type="checkbox" name="ターボ" value="ON"> ターボ</label><br>
+        <label><input type="checkbox" name="ハーネス" value="ON"> ハーネス</label><br>
+        <label><input type="checkbox" name="NOS" value="ON"> NOS</label>
+      </div>
+
+      <button type="submit">送信</button>
+    </form>
+  </div>
+
+  <script>
+    let currentEmail = '';
+
+    function onSignIn(response) {
+      const jwt = response.credential;
+      const payload = JSON.parse(atob(jwt.split('.')[1]));
+      currentEmail = payload.email;
+
+      fetch('https://script.google.com/macros/s/AKfycbyT8DiQ3HDADEsDzptcA_i4k116fYfszL1IBMSfTq-7jOAMOLbWg-QDsoo8EcK3AJ3T/exec')
+        .then(res => res.json())
+        .then(users => {
+          const user = users.find(u => u.メールアドレス === currentEmail);
+          if (user) {
+            document.getElementById('form-container').style.display = 'block';
+            const ownerSelect = document.getElementById('owner');
+            ownerSelect.innerHTML = `<option value="${user.名前}">${user.名前}</option>`;
+          } else {
+            alert('アクセス権がありません。');
+          }
+        });
+    }
+
+    document.getElementById("customForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+
+      const formData = new FormData(this);
+      const data = {};
+      formData.forEach((value, key) => {
+        if (data[key]) {
+          data[key] += ',' + value;
+        } else {
+          data[key] = value;
+        }
+      });
+
+      fetch("https://script.google.com/macros/s/AKfycbyT8DiQ3HDADEsDzptcA_i4k116fYfszL1IBMSfTq-7jOAMOLbWg-QDsoo8EcK3AJ3T/exec", {
+        method: "POST",
+        mode: "cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      })
+      .then(res => res.json())
+      .then(res => {
+        alert("送信が完了しました！");
+        document.getElementById("customForm").reset();
+      })
+      .catch(err => {
+        alert("送信に失敗しました: " + err.message);
+      });
+    });
+  </script>
+</body>
+</html>

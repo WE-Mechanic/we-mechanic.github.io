@@ -4,120 +4,83 @@
   <meta charset="UTF-8" />
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body { font-family: sans-serif; padding: 2rem; }
+    #form-container { display: none; }
+  </style>
 </head>
 <body>
   <h2>性能カスタム記録フォーム</h2>
-  
-  <!-- Googleログイン -->
   <div id="g_id_onload"
        data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
        data-callback="onSignIn"
        data-auto_prompt="false">
   </div>
-  <div class="g_id_signin"
-       data-type="standard"
-       data-size="large"
-       data-theme="outline"
-       data-text="sign_in_with"
-       data-shape="rectangular"
-       data-logo_alignment="left">
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <div id="form-container">
+    <form id="customForm">
+      <label>記録者名:
+        <input type="text" id="name" name="name" readonly required />
+      </label><br><br>
+      <label>車両番号:
+        <input type="text" id="car" name="car" required />
+      </label><br><br>
+      <label>オーナー名:
+        <input type="text" id="owner" name="owner" required />
+      </label><br><br>
+      <label>備考:
+        <textarea id="note" name="note"></textarea>
+      </label><br><br>
+      <button type="submit">記録する</button>
+    </form>
+    <p id="result"></p>
   </div>
 
-  <form id="customForm" style="display:none;">
-    <label for="name">名前:</label>
-    <select id="name" name="name" required></select><br>
-
-    <label for="carNumber">車両番号:</label>
-    <input type="text" id="carNumber" name="carNumber" required><br>
-
-    <label for="owner">オーナー名:</label>
-    <input type="text" id="owner" name="owner" required><br>
-
-    <label for="engine">エンジン性能:</label>
-    <input type="text" id="engine" name="engine"><br>
-
-    <label for="brake">ブレーキ性能:</label>
-    <input type="text" id="brake" name="brake"><br>
-
-    <label for="suspension">サスペンション性能:</label>
-    <input type="text" id="suspension" name="suspension"><br>
-
-    <label for="turbo">ターボ性能:</label>
-    <input type="text" id="turbo" name="turbo"><br>
-
-    <label for="memo">メモ:</label>
-    <textarea id="memo" name="memo"></textarea><br>
-
-    <button type="submit">送信</button>
-  </form>
-
   <script>
-    const sheetId = "1cqfFkVK_HvhbidE2Myks-YCiFE-sNVncIS2DcejazMQ";
-    const sheetName = "許可ユーザー";
-    const apiKey = "AIzaSyB-kL0qnUkDXQ87D8wNWJkJkdhz1s6Ycto"; // ← 修正済み！
-    const gasUrl = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
 
-    let userEmail = "";
-
-    async function fetchNames(email) {
-      const url = `https://sheets.googleapis.com/v4/spreadsheets/${sheetId}/values/${encodeURIComponent(sheetName)}!A2:B100?key=${apiKey}`;
-      const res = await fetch(url);
-      const data = await res.json();
-
-      const matched = (data.values || []).filter(row => row[0] === email);
-      const nameSelect = document.getElementById("name");
-      nameSelect.innerHTML = "";
-
-      if (matched.length > 0) {
-        const name = matched[0][1];
-        const option = document.createElement("option");
-        option.value = name;
-        option.textContent = name;
-        nameSelect.appendChild(option);
-        nameSelect.value = name;
-        document.getElementById("customForm").style.display = "block";
-      } else {
-        alert("アクセス権がありません。");
-      }
-    }
-
-    function onSignIn(response) {
+    async function onSignIn(response) {
       const credential = response.credential;
       const payload = JSON.parse(atob(credential.split('.')[1]));
-      userEmail = payload.email;
-      fetchNames(userEmail);
+      const email = payload.email;
+
+      try {
+        const res = await fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`);
+        const data = await res.json();
+
+        if (data.status === 'success') {
+          document.getElementById('name').value = data.name;
+          document.getElementById('form-container').style.display = 'block';
+        } else {
+          alert(data.message);
+        }
+      } catch (err) {
+        alert("ログイン確認エラー: " + err);
+      }
     }
 
-    document.getElementById("customForm").addEventListener("submit", async function(e) {
+    document.getElementById("customForm").addEventListener("submit", async function (e) {
       e.preventDefault();
-      const form = e.target;
-      const data = {
-        name: form.name.value,
-        carNumber: form.carNumber.value,
-        owner: form.owner.value,
-        engine: form.engine.value,
-        brake: form.brake.value,
-        suspension: form.suspension.value,
-        turbo: form.turbo.value,
-        memo: form.memo.value
+      const formData = {
+        name: document.getElementById("name").value,
+        car: document.getElementById("car").value,
+        owner: document.getElementById("owner").value,
+        note: document.getElementById("note").value,
       };
 
-      const response = await fetch(gasUrl, {
+      const response = await fetch(GAS_URL, {
         method: "POST",
-        mode: "cors",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify(data)
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(formData),
       });
 
-      if (response.ok) {
-        alert("送信が完了しました。");
-        form.reset();
-        form.name.value = data.name; // 名前は初期値に戻す
-      } else {
-        alert("送信に失敗しました。");
-      }
+      const result = await response.json();
+      document.getElementById("result").textContent = result.status === 'success'
+        ? "記録しました！"
+        : "記録失敗：" + result.message;
+
+      if (result.status === 'success') this.reset();
     });
   </script>
 </body>

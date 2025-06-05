@@ -1,87 +1,163 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body { font-family: sans-serif; padding: 2rem; }
-    #form-container { display: none; }
+    body { font-family: sans-serif; padding: 20px; background: #f5f5f5; }
+    .section { margin-bottom: 20px; }
+    .radio-group label { display: block; }
+    button { padding: 10px 20px; }
   </style>
 </head>
 <body>
-  <h2>性能カスタム記録フォーム</h2>
-  <div id="g_id_onload"
-       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
-       data-callback="onSignIn"
-       data-auto_prompt="false">
-  </div>
-  <div class="g_id_signin" data-type="standard"></div>
 
-  <div id="form-container">
+  <h1>性能カスタム記録フォーム</h1>
+
+  <div id="login-box">
+    <div id="g_id_onload"
+         data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+         data-callback="onSignIn"
+         data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin"
+         data-type="standard"
+         data-size="large"
+         data-theme="outline"
+         data-text="sign_in_with"
+         data-shape="rectangular"
+         data-logo_alignment="left">
+    </div>
+  </div>
+
+  <div id="form-box" style="display:none;">
     <form id="customForm">
-      <label>記録者名:
-        <input type="text" id="name" name="name" readonly required />
-      </label><br><br>
-      <label>車両番号:
-        <input type="text" id="car" name="car" required />
-      </label><br><br>
-      <label>オーナー名:
-        <input type="text" id="owner" name="owner" required />
-      </label><br><br>
-      <label>備考:
-        <textarea id="note" name="note"></textarea>
-      </label><br><br>
-      <button type="submit">記録する</button>
+
+      <div class="section">
+        <label for="userName">記録者名</label>
+        <select name="userName" id="userName" required></select>
+      </div>
+
+      <div class="section">
+        <label for="vehicleNumber">車両番号</label>
+        <input type="text" name="vehicleNumber" id="vehicleNumber" required>
+      </div>
+
+      <div class="section">
+        <label for="ownerName">オーナー名</label>
+        <input type="text" name="ownerName" id="ownerName" required>
+      </div>
+
+      <!-- 性能パーツ入力 -->
+      <div class="section">
+        <label>エンジン</label>
+        <div class="radio-group">
+          <label><input type="radio" name="エンジン" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="エンジン" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="エンジン" value="ティア3"> ティア3</label>
+          <label><input type="radio" name="エンジン" value="ティア4"> ティア4</label>
+          <label><input type="radio" name="エンジン" value="ティア5"> ティア5</label>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>ブレーキ</label>
+        <div class="radio-group">
+          <label><input type="radio" name="ブレーキ" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="ブレーキ" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="ブレーキ" value="ティア3"> ティア3</label>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>トランスミッション</label>
+        <div class="radio-group">
+          <label><input type="radio" name="トランスミッション" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="トランスミッション" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="トランスミッション" value="ティア3"> ティア3</label>
+        </div>
+      </div>
+
+      <div class="section">
+        <label>サスペンション</label>
+        <div class="radio-group">
+          <label><input type="radio" name="サスペンション" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="サスペンション" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="サスペンション" value="ティア3"> ティア3</label>
+          <label><input type="radio" name="サスペンション" value="ティア4"> ティア4</label>
+        </div>
+      </div>
+
+      <div class="section">
+        <label><input type="checkbox" name="アーマー" value="ON"> アーマー</label>
+        <label><input type="checkbox" name="ターボ" value="ON"> ターボ</label>
+        <label><input type="checkbox" name="ハーネス" value="ON"> ハーネス</label>
+        <label><input type="checkbox" name="NOS" value="ON"> NOS</label>
+      </div>
+
+      <button type="submit">送信</button>
     </form>
-    <p id="result"></p>
   </div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbyT8DiQ3HDADEsDzptcA_i4k116fYfszL1IBMSfTq-7jOAMOLbWg-QDsoo8EcK3AJ3T/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
+    let userEmail = "";
 
-    async function onSignIn(response) {
-      const credential = response.credential;
-      const payload = JSON.parse(atob(credential.split('.')[1]));
-      const email = payload.email;
+    function onSignIn(response) {
+      const id_token = response.credential;
+      const payload = JSON.parse(atob(id_token.split(".")[1]));
+      userEmail = payload.email;
 
-      try {
-        const res = await fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`);
-        const data = await res.json();
+      fetch(`${GAS_URL}?email=${encodeURIComponent(userEmail)}`)
+        .then(res => res.json())
+        .then(data => {
+          if (!data.allowed) {
+            alert("アクセス権がありません");
+            return;
+          }
 
-        if (data.status === 'success') {
-          document.getElementById('name').value = data.name;
-          document.getElementById('form-container').style.display = 'block';
-        } else {
-          alert(data.message);
-        }
-      } catch (err) {
-        alert("ログイン確認エラー: " + err);
-      }
+          const userSelect = document.getElementById("userName");
+          userSelect.innerHTML = "";
+
+          data.names.forEach(name => {
+            const option = document.createElement("option");
+            option.value = option.textContent = name;
+            if (name === data.defaultName) option.selected = true;
+            userSelect.appendChild(option);
+          });
+
+          document.getElementById("login-box").style.display = "none";
+          document.getElementById("form-box").style.display = "block";
+        });
     }
 
-    document.getElementById("customForm").addEventListener("submit", async function (e) {
+    document.getElementById("customForm").addEventListener("submit", function(e) {
       e.preventDefault();
-      const formData = {
-        name: document.getElementById("name").value,
-        car: document.getElementById("car").value,
-        owner: document.getElementById("owner").value,
-        note: document.getElementById("note").value,
-      };
-
-      const response = await fetch(GAS_URL, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
+      const formData = new FormData(this);
+      const obj = {};
+      formData.forEach((value, key) => {
+        if (obj[key]) {
+          if (!Array.isArray(obj[key])) obj[key] = [obj[key]];
+          obj[key].push(value);
+        } else {
+          obj[key] = value;
+        }
       });
 
-      const result = await response.json();
-      document.getElementById("result").textContent = result.status === 'success'
-        ? "記録しました！"
-        : "記録失敗：" + result.message;
-
-      if (result.status === 'success') this.reset();
+      fetch(GAS_URL, {
+        method: "POST",
+        body: JSON.stringify(obj),
+        headers: { "Content-Type": "application/json" }
+      })
+        .then(res => res.text())
+        .then(text => {
+          alert("送信が完了しました！");
+          document.getElementById("customForm").reset();
+        })
+        .catch(err => alert("送信エラー: " + err));
     });
   </script>
+
 </body>
 </html>

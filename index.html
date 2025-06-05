@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <title>性能カスタム記録フォーム</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body { font-family: sans-serif; padding: 20px; }
+    label, select, input, button { display: block; margin-top: 10px; }
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+  <h2>性能カスタム記録フォーム</h2>
+
+  <div id="g_id_onload"
+       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+       data-callback="onSignIn"
+       data-auto_prompt="false"
+       class="hidden"></div>
+
+  <div id="google-login"></div>
+
+  <div id="form-area" class="hidden">
+    <form id="customForm">
+      <label for="mechanicName">名前:</label>
+      <select id="mechanicName" name="mechanicName" required></select>
+
+      <label for="carNumber">車両番号:</label>
+      <input type="text" id="carNumber" name="carNumber" required />
+
+      <label for="ownerName">オーナー名:</label>
+      <input type="text" id="ownerName" name="ownerName" required />
+
+      <button type="submit">記録する</button>
+    </form>
+    <p id="result"></p>
+  </div>
+
+  <script>
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbyFY-ROJIx4tYsumcpZ3Rx9ykMkrFOXhXEH90-LYJgYKAVhZ2eV-AC_fQ-rsTybAY3P/exec";
+    let currentUserEmail = '';
+    let userNameMap = {}; // email → 名前
+
+    async function fetchUserList() {
+      const res = await fetch(GAS_URL);
+      if (!res.ok) throw new Error("ユーザーリストの取得に失敗しました");
+      const data = await res.json();
+      userNameMap = data;
+    }
+
+    function onSignIn(response) {
+      const idToken = response.credential;
+      const payload = JSON.parse(atob(idToken.split('.')[1]));
+      const email = payload.email;
+      currentUserEmail = email;
+
+      if (userNameMap[email]) {
+        document.getElementById("form-area").classList.remove("hidden");
+        document.getElementById("google-login").classList.add("hidden");
+
+        const select = document.getElementById("mechanicName");
+        select.innerHTML = `<option value="${userNameMap[email]}" selected>${userNameMap[email]}</option>`;
+      } else {
+        document.body.innerHTML = `<p>このフォームを使用する権限がありません。</p>`;
+      }
+    }
+
+    window.onload = async () => {
+      try {
+        await fetchUserList();
+        google.accounts.id.initialize({
+          client_id: "735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com",
+          callback: onSignIn,
+        });
+        google.accounts.id.renderButton(document.getElementById("google-login"), {
+          theme: "outline",
+          size: "large"
+        });
+      } catch (err) {
+        document.body.innerHTML = `<p>初期化エラー: ${err.message}</p>`;
+      }
+    };
+
+    document.getElementById("customForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const payload = {};
+      formData.forEach((value, key) => payload[key] = value);
+
+      try {
+        const res = await fetch(GAS_URL, {
+          method: 'POST',
+          body: JSON.stringify(payload),
+          headers: { 'Content-Type': 'application/json' }
+        });
+
+        const resultText = await res.text();
+        document.getElementById("result").textContent = resultText;
+        e.target.reset();
+      } catch (error) {
+        document.getElementById("result").textContent = "送信に失敗しました: " + error;
+      }
+    });
+  </script>
+</body>
+</html>

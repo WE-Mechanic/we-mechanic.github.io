@@ -2,136 +2,131 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>性能カスタム記録フォーム</title>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
     body {
       font-family: sans-serif;
-      padding: 20px;
+      margin: 20px;
     }
     .section {
-      margin-bottom: 15px;
+      margin-bottom: 20px;
     }
     .radio-group label {
       display: block;
     }
-    #formSection {
-      display: none;
-    }
   </style>
 </head>
 <body>
-  <h2>性能カスタム記録フォーム</h2>
-
-  <div id="loginSection">
-    <div id="g_id_onload"
-      data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
-      data-context="signin"
-      data-ux_mode="popup"
-      data-callback="handleCredentialResponse"
-      data-auto_prompt="false">
+  <h1>性能カスタム記録フォーム</h1>
+  <form id="form">
+    <div class="section">
+      <label>記録者名</label>
+      <select name="名前" id="名前" required></select>
     </div>
 
-    <div class="g_id_signin"
-      data-type="standard"
-      data-size="large"
-      data-theme="outline"
-      data-text="sign_in_with"
-      data-shape="rectangular"
-      data-logo_alignment="left">
+    <div class="section">
+      <label>車両番号</label>
+      <input type="text" name="車両番号" required>
     </div>
-  </div>
 
-  <div id="formSection">
-    <p>ようこそ、<span id="userName"></span> さん</p>
-    <form id="customForm">
-      <input type="hidden" name="名前" id="名前">
+    <div class="section">
+      <label>オーナー名</label>
+      <input type="text" name="オーナー名" required>
+    </div>
 
-      <div class="section">
-        <label>エンジン</label>
-        <div class="radio-group">
-          <label><input type="radio" name="エンジン" value="ティア1"> ティア1</label>
-          <label><input type="radio" name="エンジン" value="ティア2"> ティア2</label>
-          <label><input type="radio" name="エンジン" value="ティア3"> ティア3</label>
-          <label><input type="radio" name="エンジン" value="ティア4"> ティア4</label>
-          <label><input type="radio" name="エンジン" value="ティア5"> ティア5</label>
-        </div>
+    <div class="section">
+      <label>エンジン</label>
+      <div class="radio-group">
+        <label><input type="radio" name="エンジン" value="ティア1"> ティア1</label>
+        <label><input type="radio" name="エンジン" value="ティア2"> ティア2</label>
+        <label><input type="radio" name="エンジン" value="ティア3"> ティア3</label>
+        <label><input type="radio" name="エンジン" value="ティア4"> ティア4</label>
+        <label><input type="radio" name="エンジン" value="ティア5"> ティア5</label>
       </div>
+    </div>
 
-      <div class="section">
-        <label>ブレーキ</label>
-        <div class="radio-group">
-          <label><input type="radio" name="ブレーキ" value="ティア1"> ティア1</label>
-          <label><input type="radio" name="ブレーキ" value="ティア2"> ティア2</label>
-          <label><input type="radio" name="ブレーキ" value="ティア3"> ティア3</label>
-        </div>
+    <div class="section">
+      <label>ブレーキ</label>
+      <div class="radio-group">
+        <label><input type="radio" name="ブレーキ" value="ティア1"> ティア1</label>
+        <label><input type="radio" name="ブレーキ" value="ティア2"> ティア2</label>
+        <label><input type="radio" name="ブレーキ" value="ティア3"> ティア3</label>
       </div>
+    </div>
 
-      <div class="section">
-        <label>トランスミッション</label>
-        <div class="radio-group">
-          <label><input type="radio" name="トランスミッション" value="ティア1"> ティア1</label>
-          <label><input type="radio" name="トランスミッション" value="ティア2"> ティア2</label>
-          <label><input type="radio" name="トランスミッション" value="ティア3"> ティア3</label>
-        </div>
+    <div class="section">
+      <label>トランスミッション</label>
+      <div class="radio-group">
+        <label><input type="radio" name="トランスミッション" value="ティア1"> ティア1</label>
+        <label><input type="radio" name="トランスミッション" value="ティア2"> ティア2</label>
+        <label><input type="radio" name="トランスミッション" value="ティア3"> ティア3</label>
+        <label><input type="radio" name="トランスミッション" value="ティア4"> ティア4</label>
       </div>
+    </div>
 
-      <div class="section">
-        <label>サスペンション</label>
-        <div class="radio-group">
-          <label><input type="radio" name="サスペンション" value="ティア1"> ティア1</label>
-          <label><input type="radio" name="サスペンション" value="ティア2"> ティア2</label>
-          <label><input type="radio" name="サスペンション" value="ティア3"> ティア3</label>
-          <label><input type="radio" name="サスペンション" value="ティア4"> ティア4</label>
-        </div>
+    <div class="section">
+      <label>サスペンション</label>
+      <div class="radio-group">
+        <label><input type="radio" name="サスペンション" value="ティア1"> ティア1</label>
+        <label><input type="radio" name="サスペンション" value="ティア2"> ティア2</label>
+        <label><input type="radio" name="サスペンション" value="ティア3"> ティア3</label>
+        <label><input type="radio" name="サスペンション" value="ティア4"> ティア4</label>
+        <label><input type="radio" name="サスペンション" value="ティア5"> ティア5</label>
       </div>
+    </div>
 
-      <div class="section">
-        <label><input type="checkbox" name="アーマー" value="ON"> アーマー</label>
-        <label><input type="checkbox" name="ターボ" value="ON"> ターボ</label>
-        <label><input type="checkbox" name="ハーネス" value="ON"> ハーネス</label>
-        <label><input type="checkbox" name="NOS" value="ON"> NOS</label>
-      </div>
+    <div class="section">
+      <label><input type="checkbox" name="アーマー" value="ON"> アーマー</label>
+      <label><input type="checkbox" name="ターボ" value="ON"> ターボ</label>
+      <label><input type="checkbox" name="ハーネス" value="ON"> ハーネス</label>
+      <label><input type="checkbox" name="NOS" value="ON"> NOS</label>
+    </div>
 
-      <button type="submit">送信</button>
-    </form>
-  </div>
+    <button type="submit">記録する</button>
+  </form>
 
   <script>
-    const GAS_URL = 'https://script.google.com/macros/s/AKfycbyT8DiQ3HDADEsDzptcA_i4k116fYfszL1IBMSfTq-7jOAMOLbWg-QDsoo8EcK3AJ3T/exec';
+    const GAS_URL = 'https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec';
 
-    function handleCredentialResponse(response) {
-      const token = response.credential;
-      const payload = JSON.parse(atob(token.split('.')[1]));
-      const email = payload.email;
+    function onSignIn(googleUser) {
+      const profile = googleUser.getBasicProfile();
+      const email = profile.getEmail();
 
       fetch(`${GAS_URL}?email=${email}`)
         .then(res => res.json())
         .then(data => {
-          if (data.allowed) {
-            document.getElementById("userName").textContent = data.name;
-            document.getElementById("名前").value = data.name;
-            document.getElementById("loginSection").style.display = "none";
-            document.getElementById("formSection").style.display = "block";
+          if (data.name) {
+            const select = document.getElementById('名前');
+            const option = document.createElement('option');
+            option.value = data.name;
+            option.textContent = data.name;
+            select.appendChild(option);
+            select.value = data.name;
           } else {
-            alert("アクセス権がありません");
+            alert("あなたにはアクセス権がありません。");
           }
         });
     }
 
-    document.getElementById("customForm").addEventListener("submit", function (e) {
+    document.getElementById('form').addEventListener('submit', async (e) => {
       e.preventDefault();
-      const formData = new FormData(this);
-      fetch(GAS_URL, {
-        method: "POST",
-        body: formData,
-      })
-        .then((res) => res.text())
-        .then((text) => {
-          alert("送信されました！");
-          this.reset();
-        });
+      const formData = new FormData(e.target);
+      const data = Object.fromEntries(formData.entries());
+
+      const res = await fetch(GAS_URL, {
+        method: 'POST',
+        body: JSON.stringify(data)
+      });
+
+      const text = await res.text();
+      alert(text);
+      e.target.reset();
     });
   </script>
+
+  <script src="https://apis.google.com/js/platform.js" async defer></script>
+  <meta name="google-signin-client_id" content="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com">
+  <div class="g-signin2" data-onsuccess="onSignIn"></div>
 </body>
 </html>

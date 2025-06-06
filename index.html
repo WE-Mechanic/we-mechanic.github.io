@@ -8,7 +8,7 @@
     body { font-family: Arial, sans-serif; padding: 20px; }
     .hidden { display: none; }
     .input-row { margin-bottom: 10px; }
-    label { display: inline-block; margin-right: 8px; }
+    label { display: inline-block; width: 120px; }
     table { border-collapse: collapse; width: 100%; max-width: 800px; margin-top: 20px; }
     th, td { border: 1px solid #ccc; padding: 6px; text-align: left; }
     .quarter-width { width: 25%; }
@@ -39,45 +39,42 @@
     </div>
 
     <table>
-      <tr>
-        <th>項目</th>
-        <th>選択</th>
-      </tr>
+      <tr><th>項目</th><th>選択</th></tr>
       <tr>
         <td>エンジン</td>
         <td>
-          <label><input type="radio" name="engine" value="ティア1">ティア1</label>
-          <label><input type="radio" name="engine" value="ティア2">ティア2</label>
-          <label><input type="radio" name="engine" value="ティア3">ティア3</label>
-          <label><input type="radio" name="engine" value="ティア4">ティア4</label>
-          <label><input type="radio" name="engine" value="ティア5">ティア5</label>
+          <label><input type="radio" name="エンジン" value="ティア1">ティア1</label>
+          <label><input type="radio" name="エンジン" value="ティア2">ティア2</label>
+          <label><input type="radio" name="エンジン" value="ティア3">ティア3</label>
+          <label><input type="radio" name="エンジン" value="ティア4">ティア4</label>
+          <label><input type="radio" name="エンジン" value="ティア5">ティア5</label>
         </td>
       </tr>
       <tr>
         <td>ブレーキ</td>
         <td>
-          <label><input type="radio" name="brake" value="ティア1">ティア1</label>
-          <label><input type="radio" name="brake" value="ティア2">ティア2</label>
-          <label><input type="radio" name="brake" value="ティア3">ティア3</label>
+          <label><input type="radio" name="ブレーキ" value="ティア1">ティア1</label>
+          <label><input type="radio" name="ブレーキ" value="ティア2">ティア2</label>
+          <label><input type="radio" name="ブレーキ" value="ティア3">ティア3</label>
         </td>
       </tr>
       <tr>
         <td>トランスミッション</td>
         <td>
-          <label><input type="radio" name="transmission" value="ティア1">ティア1</label>
-          <label><input type="radio" name="transmission" value="ティア2">ティア2</label>
-          <label><input type="radio" name="transmission" value="ティア3">ティア3</label>
-          <label><input type="radio" name="transmission" value="ティア4">ティア4</label>
+          <label><input type="radio" name="トランスミッション" value="ティア1">ティア1</label>
+          <label><input type="radio" name="トランスミッション" value="ティア2">ティア2</label>
+          <label><input type="radio" name="トランスミッション" value="ティア3">ティア3</label>
+          <label><input type="radio" name="トランスミッション" value="ティア4">ティア4</label>
         </td>
       </tr>
       <tr>
         <td>サスペンション</td>
         <td>
-          <label><input type="radio" name="suspension" value="ティア1">ティア1</label>
-          <label><input type="radio" name="suspension" value="ティア2">ティア2</label>
-          <label><input type="radio" name="suspension" value="ティア3">ティア3</label>
-          <label><input type="radio" name="suspension" value="ティア4">ティア4</label>
-          <label><input type="radio" name="suspension" value="ティア5">ティア5</label>
+          <label><input type="radio" name="サスペンション" value="ティア1">ティア1</label>
+          <label><input type="radio" name="サスペンション" value="ティア2">ティア2</label>
+          <label><input type="radio" name="サスペンション" value="ティア3">ティア3</label>
+          <label><input type="radio" name="サスペンション" value="ティア4">ティア4</label>
+          <label><input type="radio" name="サスペンション" value="ティア5">ティア5</label>
         </td>
       </tr>
       <tr>
@@ -131,10 +128,10 @@
         name: document.getElementById("recorder").value,
         carNumber: document.getElementById("carNumber").value,
         owner: document.getElementById("owner").value,
-        engine: getRadioValue("engine"),
-        brake: getRadioValue("brake"),
-        transmission: getRadioValue("transmission"),
-        suspension: getRadioValue("suspension"),
+        engine: getRadioValue("エンジン"),
+        brake: getRadioValue("ブレーキ"),
+        transmission: getRadioValue("トランスミッション"),
+        suspension: getRadioValue("サスペンション"),
         armor: document.querySelector('input[name="armor"]').checked ? "ON" : "OFF",
         turbo: document.querySelector('input[name="turbo"]').checked ? "ON" : "OFF",
         harness: document.querySelector('input[name="harness"]').checked ? "ON" : "OFF",

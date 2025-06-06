@@ -1,74 +1,43 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
+  <meta charset="UTF-8">
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    .row {
-      display: flex;
-      margin-bottom: 10px;
-      align-items: center;
-    }
-    .row label {
-      width: 120px;
-    }
-    input[type="text"], select {
-      width: 25%;
-      padding: 5px;
-      margin-left: 5px;
-    }
-    table {
-      border-collapse: collapse;
-      margin-top: 20px;
-    }
-    td {
-      padding: 5px 10px;
-    }
-    .section-title {
-      margin-top: 20px;
-      font-weight: bold;
-    }
-    .result-block {
-      white-space: pre-wrap;
-      border: 1px solid #ccc;
-      padding: 10px;
-      margin-top: 10px;
-      font-family: monospace;
-    }
+    body { font-family: sans-serif; padding: 20px; }
+    table td:first-child { width: 120px; vertical-align: top; }
+    input[type="text"], select { width: 200px; }
+    label { margin-right: 8px; }
   </style>
 </head>
 <body>
   <h2>性能カスタム記録フォーム</h2>
 
-  <div id="g_id_onload"
-       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
-       data-callback="onSignIn">
+  <div id="loginSection">
+    <div id="g_id_onload"
+      data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+      data-callback="handleCredentialResponse"
+      data-auto_prompt="false">
+    </div>
+    <div class="g_id_signin" data-type="standard"></div>
   </div>
 
-  <div class="g_id_signin" data-type="standard"></div>
-
-  <div id="formContainer" style="display:none;">
+  <div id="formSection" style="display:none;">
     <form id="customForm">
-      <div class="row">
-        <label>記録者:</label>
-        <select id="userSelect" name="user" required></select>
-      </div>
-      <div class="row">
-        <label>車両番号:</label>
-        <input type="text" name="carNumber" required />
-      </div>
-      <div class="row">
-        <label>オーナー名:</label>
-        <input type="text" name="owner" required />
-      </div>
-
-      <div class="section-title">性能パーツ</div>
       <table>
+        <tr>
+          <td>記録者名:</td>
+          <td><select id="userName" name="userName" required></select></td>
+        </tr>
+        <tr>
+          <td>車両番号:</td>
+          <td><input type="text" name="vehicleNumber" required></td>
+        </tr>
+        <tr>
+          <td>オーナー名:</td>
+          <td><input type="text" name="ownerName" required></td>
+        </tr>
         <tr>
           <td>エンジン:</td>
           <td>
@@ -116,106 +85,64 @@
           </td>
         </tr>
       </table>
-
-      <button type="submit">記録する</button>
+      <br>
+      <button type="submit">送信</button>
     </form>
-
-    <div class="section-title">カスタム検索</div>
-    <div class="row">
-      <label>車両番号またはオーナー名:</label>
-      <input type="text" id="searchInput" />
-      <button onclick="search()">検索</button>
-    </div>
-
-    <div id="results"></div>
+    <div id="message"></div>
   </div>
 
   <script>
     let userEmail = "";
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzfPY6-ClI0OXlB2Ac6JW4rVg07YUMiRTJyLPWONrDJ9XA2vylvonkzuOLVqwY24w/exec";
 
-    function onSignIn(response) {
-      const idToken = response.credential;
-      fetch(scriptURL + "?mode=verify", {
+    function handleCredentialResponse(response) {
+      const data = { id_token: response.credential };
+      fetch("https://script.google.com/macros/s/AKfycby8P6fjFcbLyQuJ5jwNGiWfnV5HfL5-svxPHlj21I9Dtauq4nelgR7MLIuSd9k4x2Qc/exec", {
         method: "POST",
-        body: JSON.stringify({ token: idToken }),
-        headers: { "Content-Type": "application/json" }
+        body: JSON.stringify({ mode: "verify", token: response.credential }),
       })
       .then(res => res.json())
-      .then(data => {
-        if (data.allowed) {
-          userEmail = data.email;
-          document.getElementById("formContainer").style.display = "block";
-          loadUsers();
+      .then(res => {
+        if (res.status === "success") {
+          userEmail = res.email;
+          document.getElementById("loginSection").style.display = "none";
+          document.getElementById("formSection").style.display = "block";
+          loadUserName(userEmail);
         } else {
-          alert("アクセスが許可されていません");
+          alert("許可されていないユーザーです");
         }
       });
     }
 
-    function loadUsers() {
-      fetch(scriptURL + "?mode=users")
+    function loadUserName(email) {
+      fetch("https://script.google.com/macros/s/AKfycby8P6fjFcbLyQuJ5jwNGiWfnV5HfL5-svxPHlj21I9Dtauq4nelgR7MLIuSd9k4x2Qc/exec?mode=getName&email=" + encodeURIComponent(email))
         .then(res => res.json())
         .then(data => {
-          const select = document.getElementById("userSelect");
-          data.users.forEach(user => {
-            const option = document.createElement("option");
-            option.value = user.name;
-            option.textContent = user.name;
-            if (user.email === userEmail) option.selected = true;
-            select.appendChild(option);
-          });
-          select.disabled = true;
+          const select = document.getElementById("userName");
+          select.innerHTML = `<option value="${data.name}">${data.name}</option>`;
         });
     }
 
     document.getElementById("customForm").addEventListener("submit", e => {
       e.preventDefault();
       const formData = new FormData(e.target);
-      const data = Object.fromEntries(formData.entries());
-      data.armor = formData.has("armor") ? "ON" : "OFF";
-      data.turbo = formData.has("turbo") ? "ON" : "OFF";
-      data.harness = formData.has("harness") ? "ON" : "OFF";
-      data.nos = formData.has("nos") ? "ON" : "OFF";
-
-      fetch(scriptURL + "?mode=submit", {
+      const json = Object.fromEntries(formData.entries());
+      json.armor = formData.get("armor") ? "ON" : "OFF";
+      json.turbo = formData.get("turbo") ? "ON" : "OFF";
+      json.harness = formData.get("harness") ? "ON" : "OFF";
+      json.nos = formData.get("nos") ? "ON" : "OFF";
+      json.mode = "submit";
+      fetch("https://script.google.com/macros/s/AKfycby8P6fjFcbLyQuJ5jwNGiWfnV5HfL5-svxPHlj21I9Dtauq4nelgR7MLIuSd9k4x2Qc/exec", {
         method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
+        body: JSON.stringify(json),
       })
       .then(res => res.json())
-      .then(result => {
-        alert("記録しました！");
-        e.target.reset();
+      .then(res => {
+        document.getElementById("message").textContent = res.message;
+        if (res.status === "success") {
+          document.getElementById("customForm").reset();
+        }
       });
     });
-
-    function search() {
-      const keyword = document.getElementById("searchInput").value;
-      fetch(scriptURL + "?mode=search&keyword=" + encodeURIComponent(keyword))
-        .then(res => res.json())
-        .then(data => {
-          const resultsDiv = document.getElementById("results");
-          resultsDiv.innerHTML = "";
-          if (data.results.length === 0) {
-            resultsDiv.textContent = "該当データがありません。";
-            return;
-          }
-          data.results.forEach(item => {
-            const block = document.createElement("div");
-            block.className = "result-block";
-            block.textContent =
-              `日時: ${item.timestamp} / 記録者: ${item.user}\n` +
-              `車両番号: ${item.carNumber} / オーナー名: ${item.owner}\n` +
-              `エンジン: ${item.engine}\n` +
-              `ブレーキ: ${item.brake}\n` +
-              `ミッション: ${item.mission}\n` +
-              `サス: ${item.suspension}\n` +
-              `アーマー: ${item.armor}, ターボ: ${item.turbo}, ハーネス: ${item.harness}, NOS: ${item.nos}`;
-            resultsDiv.appendChild(block);
-          });
-        });
-    }
   </script>
 </body>
 </html>

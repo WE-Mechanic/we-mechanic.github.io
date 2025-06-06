@@ -9,6 +9,13 @@
       font-family: Arial, sans-serif;
       padding: 20px;
       background: #f2f2f2;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 700px;
+      width: 100%;
     }
 
     h1 {
@@ -28,12 +35,8 @@
       margin-top: 10px;
     }
 
-    .section {
-      margin-top: 20px;
-    }
-
     .input-field, select {
-      width: 100%;
+      width: 300px;
       padding: 8px;
       margin-top: 5px;
       border-radius: 5px;
@@ -41,9 +44,9 @@
     }
 
     .radio-table {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
-      gap: 10px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
       margin-top: 10px;
     }
 
@@ -70,69 +73,71 @@
   </style>
 </head>
 <body>
-  <h1>性能カスタム記録フォーム</h1>
+  <div class="container">
+    <h1>性能カスタム記録フォーム</h1>
 
-  <form id="customForm">
-    <label for="vehicleId">車体番号</label>
-    <input class="input-field" type="text" id="vehicleId" name="車体番号" required>
+    <form id="customForm">
+      <label for="vehicleId">車体番号</label>
+      <input class="input-field" type="text" id="vehicleId" name="車体番号" required>
 
-    <label for="owner">オーナー名</label>
-    <input class="input-field" type="text" id="owner" name="オーナー名" required>
+      <label for="owner">オーナー名</label>
+      <input class="input-field" type="text" id="owner" name="オーナー名" required>
 
-    <label for="recorder">記録者名</label>
-    <select class="input-field" id="recorder" name="記録者名" required></select>
+      <label for="recorder">記録者名</label>
+      <select class="input-field" id="recorder" name="記録者名" required></select>
 
-    <div class="section">
-      <label>エンジン</label>
-      <div class="radio-table">
-        <label><input type="radio" name="エンジン" value="ティア1"> ティア1</label>
-        <label><input type="radio" name="エンジン" value="ティア2"> ティア2</label>
-        <label><input type="radio" name="エンジン" value="ティア3"> ティア3</label>
-        <label><input type="radio" name="エンジン" value="ティア4"> ティア4</label>
-        <label><input type="radio" name="エンジン" value="ティア5"> ティア5</label>
+      <div class="section">
+        <label>エンジン</label>
+        <div class="radio-table">
+          <label><input type="radio" name="エンジン" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="エンジン" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="エンジン" value="ティア3"> ティア3</label>
+          <label><input type="radio" name="エンジン" value="ティア4"> ティア4</label>
+          <label><input type="radio" name="エンジン" value="ティア5"> ティア5</label>
+        </div>
+
+        <label>ブレーキ</label>
+        <div class="radio-table">
+          <label><input type="radio" name="ブレーキ" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="ブレーキ" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="ブレーキ" value="ティア3"> ティア3</label>
+        </div>
+
+        <label>トランスミッション</label>
+        <div class="radio-table">
+          <label><input type="radio" name="トランスミッション" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="トランスミッション" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="トランスミッション" value="ティア3"> ティア3</label>
+          <label><input type="radio" name="トランスミッション" value="ティア4"> ティア4</label>
+        </div>
+
+        <label>サスペンション</label>
+        <div class="radio-table">
+          <label><input type="radio" name="サスペンション" value="ティア1"> ティア1</label>
+          <label><input type="radio" name="サスペンション" value="ティア2"> ティア2</label>
+          <label><input type="radio" name="サスペンション" value="ティア3"> ティア3</label>
+          <label><input type="radio" name="サスペンション" value="ティア4"> ティア4</label>
+          <label><input type="radio" name="サスペンション" value="ティア5"> ティア5</label>
+        </div>
+
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="アーマー" value="ON"> アーマー</label>
+          <label><input type="checkbox" name="ターボ" value="ON"> ターボ</label>
+          <label><input type="checkbox" name="ハーネス" value="ON"> ハーネス</label>
+          <label><input type="checkbox" name="NOS" value="ON"> NOS</label>
+        </div>
       </div>
 
-      <label>ブレーキ</label>
-      <div class="radio-table">
-        <label><input type="radio" name="ブレーキ" value="ティア1"> ティア1</label>
-        <label><input type="radio" name="ブレーキ" value="ティア2"> ティア2</label>
-        <label><input type="radio" name="ブレーキ" value="ティア3"> ティア3</label>
-      </div>
+      <button type="submit">送信</button>
+    </form>
 
-      <label>トランスミッション</label>
-      <div class="radio-table">
-        <label><input type="radio" name="トランスミッション" value="ティア1"> ティア1</label>
-        <label><input type="radio" name="トランスミッション" value="ティア2"> ティア2</label>
-        <label><input type="radio" name="トランスミッション" value="ティア3"> ティア3</label>
-        <label><input type="radio" name="トランスミッション" value="ティア4"> ティア4</label>
-      </div>
-
-      <label>サスペンション</label>
-      <div class="radio-table">
-        <label><input type="radio" name="サスペンション" value="ティア1"> ティア1</label>
-        <label><input type="radio" name="サスペンション" value="ティア2"> ティア2</label>
-        <label><input type="radio" name="サスペンション" value="ティア3"> ティア3</label>
-        <label><input type="radio" name="サスペンション" value="ティア4"> ティア4</label>
-        <label><input type="radio" name="サスペンション" value="ティア5"> ティア5</label>
-      </div>
-
-      <div class="checkbox-group">
-        <label><input type="checkbox" name="アーマー" value="ON"> アーマー</label>
-        <label><input type="checkbox" name="ターボ" value="ON"> ターボ</label>
-        <label><input type="checkbox" name="ハーネス" value="ON"> ハーネス</label>
-        <label><input type="checkbox" name="NOS" value="ON"> NOS</label>
-      </div>
+    <!-- 検索機能 -->
+    <div class="search-section">
+      <h2>記録検索</h2>
+      <input class="input-field" type="text" id="searchInput" placeholder="オーナー名または車体番号">
+      <button onclick="searchData()">検索</button>
+      <div id="result-area"></div>
     </div>
-
-    <button type="submit">送信</button>
-  </form>
-
-  <!-- 検索機能 -->
-  <div class="search-section">
-    <h2>記録検索</h2>
-    <input class="input-field" type="text" id="searchInput" placeholder="オーナー名または車体番号">
-    <button onclick="searchData()">検索</button>
-    <div id="result-area"></div>
   </div>
 
   <script>

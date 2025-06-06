@@ -82,7 +82,7 @@
   </form>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/https://script.google.com/macros/s/AKfycbwW2W2hWGOlutJdnxCa_cqMJ4cqWOSykZDUCGTW_LpEKU8cyPFrGUhlPgeCLR1Hyzvh/exec";
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwW2W2hWGOlutJdnxCa_cqMJ4cqWOSykZDUCGTW_LpEKU8cyPFrGUhlPgeCLR1Hyzvh/exec";
 
     function handleCredentialResponse(res) {
       fetch(GAS_URL, {
@@ -99,7 +99,6 @@
         }).catch(e => alert("認証エラー: " + e));
     }
 
-    document.getElementById("customForm")?.addEventListener("submit", e => e.preventDefault());
     document.getElementById("formSection").addEventListener("submit", e => {
       e.preventDefault();
       const data = {
@@ -121,7 +120,10 @@
         headers: {"Content-Type":"application/json"},
         body: JSON.stringify(data)
       }).then(r => r.json())
-        .then(d => document.getElementById("msg").textContent = d.success ? "送信成功" : "失敗")
+        .then(d => {
+          document.getElementById("msg").textContent = d.success ? "送信成功" : "失敗";
+          if (d.success) document.getElementById("formSection").reset();
+        })
         .catch(e => document.getElementById("msg").textContent = "通信エラー");
     });
   </script>

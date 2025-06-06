@@ -2,173 +2,75 @@
 <html lang="ja">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body {
-      font-family: Arial, sans-serif;
-      padding: 20px;
-    }
-    input[type="text"], select {
-      width: 25%;
-      margin-bottom: 10px;
-      padding: 5px;
-      border: none;
-      border-bottom: 1px solid #ccc;
-    }
-    table {
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    td {
-      padding: 5px 10px;
-    }
-    .radio-group label {
-      margin-right: 10px;
-    }
-    .checkbox-group label {
-      margin-right: 20px;
-    }
-    button {
-      margin-top: 15px;
-      padding: 5px 15px;
-    }
+    input, select, button { border: none; padding: 4px; margin: 4px; }
   </style>
 </head>
 <body>
-  <h2>性能カスタム記録フォーム</h2>
-
   <div id="g_id_onload"
-    data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
-    data-callback="onGoogleSignIn"
-    data-auto_prompt="false">
+       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+       data-callback="onGoogleSignIn"
+       data-auto_prompt="false">
   </div>
   <div class="g_id_signin" data-type="standard"></div>
 
-  <form id="customForm" style="display:none;" onsubmit="handleSubmit(event)">
-    <div>
-      <label>記入者名:</label>
-      <select id="writer" name="writer" required></select>
-    </div>
-    <div>
-      <label>車両番号:</label>
-      <input type="text" id="carNumber" name="carNumber" required>
-    </div>
-    <table border="1">
-      <tr>
-        <td>エンジン</td>
-        <td class="radio-group">
-          <label><input type="radio" name="engine" value="1" required>ティア1</label>
-          <label><input type="radio" name="engine" value="2">ティア2</label>
-          <label><input type="radio" name="engine" value="3">ティア3</label>
-          <label><input type="radio" name="engine" value="4">ティア4</label>
-          <label><input type="radio" name="engine" value="5">ティア5</label>
-        </td>
-      </tr>
-      <tr>
-        <td>ブレーキ</td>
-        <td class="radio-group">
-          <label><input type="radio" name="brake" value="1" required>ティア1</label>
-          <label><input type="radio" name="brake" value="2">ティア2</label>
-          <label><input type="radio" name="brake" value="3">ティア3</label>
-        </td>
-      </tr>
-      <tr>
-        <td>トランスミッション</td>
-        <td class="radio-group">
-          <label><input type="radio" name="transmission" value="1" required>ティア1</label>
-          <label><input type="radio" name="transmission" value="2">ティア2</label>
-          <label><input type="radio" name="transmission" value="3">ティア3</label>
-          <label><input type="radio" name="transmission" value="4">ティア4</label>
-        </td>
-      </tr>
-      <tr>
-        <td>サスペンション</td>
-        <td class="radio-group">
-          <label><input type="radio" name="suspension" value="1" required>ティア1</label>
-          <label><input type="radio" name="suspension" value="2">ティア2</label>
-          <label><input type="radio" name="suspension" value="3">ティア3</label>
-          <label><input type="radio" name="suspension" value="4">ティア4</label>
-          <label><input type="radio" name="suspension" value="5">ティア5</label>
-        </td>
-      </tr>
-      <tr>
-        <td>その他</td>
-        <td class="checkbox-group">
-          <label><input type="checkbox" name="armor">アーマー</label>
-          <label><input type="checkbox" name="turbo">ターボ</label>
-          <label><input type="checkbox" name="harness">ハーネス</label>
-          <label><input type="checkbox" name="nos">NOS</label>
-        </td>
-      </tr>
-    </table>
+  <form id="customForm" style="display:none;">
+    <input type="text" id="vehicleNumber" name="vehicleNumber" placeholder="車両番号" required />
+    <!-- 他のパーツ省略 -->
     <button type="submit">送信</button>
   </form>
 
   <script>
+    let idToken = "";
+
     function onGoogleSignIn(response) {
-      const idToken = response.credential;
+      idToken = response.credential;
 
       fetch("https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "verify", token: idToken })
+        body: JSON.stringify({ mode: "auth", idToken: idToken }),
       })
-      .then(res => res.text())
-      .then(email => {
-        if (!email.includes("@")) {
-          alert("許可されていないユーザーです。");
-          return;
-        }
-
-        fetch("https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec?mode=getUsers")
-          .then(res => res.json())
-          .then(users => {
-            const user = users.find(u => u.email === email);
-            if (!user) {
-              alert("ユーザー名が見つかりません。");
-              return;
-            }
-            const writerSelect = document.getElementById("writer");
-            writerSelect.innerHTML = `<option value="${user.name}">${user.name}</option>`;
-            document.getElementById("customForm").style.display = "block";
-          });
-      })
-      .catch(err => {
-        console.error("ログインエラー:", err);
-        alert("ログインに失敗しました。");
-      });
-    }
-
-    function handleSubmit(event) {
-      event.preventDefault();
-      const form = document.getElementById("customForm");
-      const formData = new FormData(form);
-      const data = {};
-      formData.forEach((value, key) => {
-        if (data[key]) {
-          if (!Array.isArray(data[key])) data[key] = [data[key]];
-          data[key].push(value);
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          document.getElementById("customForm").style.display = "block";
         } else {
-          data[key] = value;
+          alert("許可されていないユーザーです。");
         }
+      })
+      .catch(e => {
+        console.error("ログイン検証エラー:", e);
+        alert("ログインに失敗しました");
       });
+    }
+
+    document.getElementById("customForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const formData = {
+        mode: "submit",
+        idToken: idToken,
+        vehicleNumber: document.getElementById("vehicleNumber").value,
+        // 他の項目もここで取得
+      };
 
       fetch("https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ mode: "submit", data })
+        body: JSON.stringify(formData),
       })
-      .then(() => {
-        alert("送信しました！");
-        form.reset();
-      })
-      .catch(err => {
-        console.error("送信失敗:", err);
-        alert("送信に失敗しました。");
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          alert("送信完了");
+          document.getElementById("customForm").reset();
+        } else {
+          alert("送信失敗: " + data.message);
+        }
       });
-    }
+    });
   </script>
 </body>
 </html>

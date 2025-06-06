@@ -148,8 +148,8 @@
 
       const formData = {
         token,
-        vehicleNumber: document.getElementById("vehicleNumber").value,
-        ownerName: document.getElementById("ownerName").value,
+        vehicleNumber: document.getElementById("vehicleNumber").value.toUpperCase(),
+        ownerName: document.getElementById("ownerName").value.toUpperCase(),
         engine: getRadioValue("engine"),
         brake: getRadioValue("brake"),
         transmission: getRadioValue("transmission"),
@@ -181,7 +181,7 @@
     }
 
     function searchData() {
-      const query = document.getElementById("searchQuery").value;
+      const query = document.getElementById("searchQuery").value.toLowerCase();
       fetch(`${scriptURL}?query=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
@@ -191,6 +191,10 @@
             return;
           }
           resultDiv.innerHTML = data.map(row => {
+            const vn = row.vehicleNumber?.toLowerCase() || "";
+            const on = row.ownerName?.toLowerCase() || "";
+            if (!vn.includes(query) && !on.includes(query)) return "";
+
             let parts = [];
             if (row.armor === "ON") parts.push("アーマー");
             if (row.turbo === "ON") parts.push("ターボ");
@@ -198,7 +202,7 @@
             if (row.nos === "ON") parts.push("NOS");
 
             return `日時: ${row.date} / 記録者: ${row.userName} /\n車両番号: ${row.vehicleNumber} / オーナー名: ${row.ownerName}\nエンジン: ${row.engine}\nブレーキ: ${row.brake}\nミッション: ${row.transmission}\nサス: ${row.suspension}\n${parts.length > 0 ? "その他: " + parts.join(", ") : ""}\n`;
-          }).join("\n---------------------\n");
+          }).filter(Boolean).join("\n---------------------\n");
         });
     }
   </script>

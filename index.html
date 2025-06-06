@@ -16,6 +16,9 @@
     .container {
       max-width: 700px;
       width: 100%;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
     h1 {
@@ -28,6 +31,7 @@
       border-radius: 10px;
       box-shadow: 0 0 10px rgba(0,0,0,0.1);
       margin-bottom: 20px;
+      width: 100%;
     }
 
     label {
@@ -36,7 +40,7 @@
     }
 
     .input-field, select {
-      width: 300px;
+      width: 175px;
       padding: 8px;
       margin-top: 5px;
       border-radius: 5px;
@@ -48,6 +52,10 @@
       flex-wrap: wrap;
       gap: 8px;
       margin-top: 10px;
+    }
+
+    .radio-table label {
+      white-space: nowrap;
     }
 
     .checkbox-group {
@@ -131,7 +139,6 @@
       <button type="submit">送信</button>
     </form>
 
-    <!-- 検索機能 -->
     <div class="search-section">
       <h2>記録検索</h2>
       <input class="input-field" type="text" id="searchInput" placeholder="オーナー名または車体番号">

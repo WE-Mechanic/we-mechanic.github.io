@@ -5,66 +5,36 @@
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    input[type="text"], select {
-      width: 25%;
-      margin: 4px;
-      padding: 4px;
-      border: none;
-      border-bottom: 1px solid #ccc;
-    }
-    table {
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    td {
-      padding: 4px 8px;
-      vertical-align: middle;
-    }
-    label {
-      margin-right: 6px;
-    }
-    button {
-      margin-top: 12px;
-      padding: 8px 16px;
-      border: none;
-      background-color: #4285f4;
-      color: white;
-      border-radius: 6px;
-      cursor: pointer;
-    }
-    #searchResults {
-      margin-top: 20px;
-    }
+    body { font-family: sans-serif; margin: 20px; }
+    .row { display: flex; align-items: center; margin-bottom: 8px; }
+    .row label { width: 100px; }
+    input[type="text"], select { width: 200px; margin-right: 10px; }
+    table { border-collapse: collapse; margin-top: 20px; }
+    td { padding: 4px 8px; }
+    .section-title { margin-top: 16px; font-weight: bold; }
+    .checkbox-group label { margin-right: 12px; }
   </style>
 </head>
 <body>
   <h2>性能カスタム記録フォーム</h2>
 
-  <div id="g_id_onload"
-    data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
-    data-callback="onSignIn"
-    data-auto_prompt="false">
-  </div>
-  <div class="g_id_signin" data-type="standard"></div>
+  <div id="loginSection"></div>
 
-  <form id="customForm" style="display:none;">
-    <div>
-      <label>記録者名:</label>
-      <select id="userName" disabled></select>
+  <div id="formSection" style="display:none;">
+    <div class="row">
+      <label>記録者名</label>
+      <select id="recorder" disabled></select>
     </div>
-    <div>
-      <label>オーナー名:</label>
-      <input type="text" id="ownerName" required />
+    <div class="row">
+      <label>車両番号</label>
+      <input type="text" id="vehicleNumber" />
     </div>
-    <div>
-      <label>車両番号:</label>
-      <input type="text" id="vehicleNumber" required />
+    <div class="row">
+      <label>オーナー名</label>
+      <input type="text" id="ownerName" />
     </div>
 
+    <div class="section-title">性能カスタム</div>
     <table>
       <tr>
         <td>エンジン</td>
@@ -85,7 +55,7 @@
         </td>
       </tr>
       <tr>
-        <td>トランスミッション</td>
+        <td>ミッション</td>
         <td>
           <label><input type="radio" name="transmission" value="ティア1">ティア1</label>
           <label><input type="radio" name="transmission" value="ティア2">ティア2</label>
@@ -94,7 +64,7 @@
         </td>
       </tr>
       <tr>
-        <td>サスペンション</td>
+        <td>サス</td>
         <td>
           <label><input type="radio" name="suspension" value="ティア1">ティア1</label>
           <label><input type="radio" name="suspension" value="ティア2">ティア2</label>
@@ -105,7 +75,7 @@
       </tr>
       <tr>
         <td>その他</td>
-        <td>
+        <td class="checkbox-group">
           <label><input type="checkbox" id="armor">アーマー</label>
           <label><input type="checkbox" id="turbo">ターボ</label>
           <label><input type="checkbox" id="harness">ハーネス</label>
@@ -114,99 +84,102 @@
       </tr>
     </table>
 
-    <button type="submit">記録する</button>
-  </form>
+    <button onclick="submitForm()">記録する</button>
 
-  <h3>検索</h3>
-  <input type="text" id="searchKeyword" placeholder="車両番号またはオーナー名で検索">
-  <button onclick="search()">検索</button>
-  <div id="searchResults"></div>
+    <hr />
+    <div class="row">
+      <label>検索:</label>
+      <input type="text" id="searchQuery" />
+      <button onclick="searchData()">検索</button>
+    </div>
+    <div id="results"></div>
+  </div>
 
   <script>
-    const WEBAPP_URL = "https://script.google.com/macros/s/AKfycbwclG9RoxME0Dot_Ttufzlptg7eKvl3Vt6MneNxQJxeKbk3xWYd0RvbVzcrXYiwcWfH/exec";
-    let idToken = "";
+    let token = "";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwclG9RoxME0Dot_Ttufzlptg7eKvl3Vt6MneNxQJxeKbk3xWYd0RvbVzcrXYiwcWfH/exec";
 
-    function onSignIn(response) {
-      idToken = response.credential;
-      fetch(WEBAPP_URL, {
+    function handleCredentialResponse(response) {
+      token = response.credential;
+      fetch(scriptURL, {
         method: "POST",
-        body: JSON.stringify({ token: idToken, mode: "auth" }),
+        body: JSON.stringify({ token: token, mode: "auth" })
       })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "success") {
-          document.getElementById("customForm").style.display = "block";
-          const userSelect = document.getElementById("userName");
-          userSelect.innerHTML = "";
-          data.names.forEach(name => {
-            const option = document.createElement("option");
-            option.value = option.text = name;
-            userSelect.appendChild(option);
-          });
-          userSelect.value = data.userName;
-        } else {
-          alert("認証に失敗しました。");
-        }
-      });
+        .then(res => res.json())
+        .then(data => {
+          if (data.status === "success") {
+            document.getElementById("formSection").style.display = "block";
+            const recorder = document.getElementById("recorder");
+            recorder.innerHTML = `<option>${data.userName}</option>`;
+            document.getElementById("loginSection").style.display = "none";
+          } else {
+            alert("認証に失敗しました");
+          }
+        });
     }
 
-    document.getElementById("customForm").addEventListener("submit", function(e) {
-      e.preventDefault();
-      const getRadioValue = name => {
-        const checked = document.querySelector(`input[name="${name}"]:checked`);
-        return checked ? checked.value : "";
-      };
+    window.onload = function () {
+      google.accounts.id.initialize({
+        client_id: "735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com",
+        callback: handleCredentialResponse
+      });
+      google.accounts.id.renderButton(
+        document.getElementById("loginSection"),
+        { theme: "outline", size: "large" }
+      );
+    };
 
+    function submitForm() {
       const data = {
-        token: idToken,
-        mode: "record",
+        token,
+        mode: "submit",
         vehicleNumber: document.getElementById("vehicleNumber").value,
         ownerName: document.getElementById("ownerName").value,
-        engine: getRadioValue("engine"),
-        brake: getRadioValue("brake"),
-        transmission: getRadioValue("transmission"),
-        suspension: getRadioValue("suspension"),
+        engine: document.querySelector('input[name="engine"]:checked')?.value || "",
+        brake: document.querySelector('input[name="brake"]:checked')?.value || "",
+        transmission: document.querySelector('input[name="transmission"]:checked')?.value || "",
+        suspension: document.querySelector('input[name="suspension"]:checked')?.value || "",
         armor: document.getElementById("armor").checked,
         turbo: document.getElementById("turbo").checked,
         harness: document.getElementById("harness").checked,
-        nos: document.getElementById("nos").checked,
+        nos: document.getElementById("nos").checked
       };
 
-      fetch(WEBAPP_URL, {
+      fetch(scriptURL, {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(data)
       })
-      .then(res => res.text())
-      .then(msg => alert(msg));
-    });
+        .then(res => res.text())
+        .then(msg => alert(msg));
+    }
 
-    function search() {
-      const keyword = document.getElementById("searchKeyword").value;
-      fetch(WEBAPP_URL, {
+    function searchData() {
+      const query = document.getElementById("searchQuery").value;
+      fetch(scriptURL, {
         method: "POST",
-        body: JSON.stringify({ token: idToken, mode: "search", keyword })
+        body: JSON.stringify({ token, mode: "search", query })
       })
-      .then(res => res.json())
-      .then(data => {
-        const div = document.getElementById("searchResults");
-        if (data.status === "success") {
-          if (data.results.length === 0) {
-            div.innerHTML = "該当なし";
+        .then(res => res.json())
+        .then(data => {
+          const results = document.getElementById("results");
+          if (data.length === 0) {
+            results.innerHTML = "一致するデータがありません。";
             return;
           }
-          const html = data.results.map(row => `
-            <div>
-              日時: ${row[0]} / 記録者: ${row[1]} / 車両番号: ${row[2]} / オーナー名: ${row[3]}<br>
-              エンジン: ${row[4]} / ブレーキ: ${row[5]} / ミッション: ${row[6]} / サス: ${row[7]}<br>
-              アーマー: ${row[8]}, ターボ: ${row[9]}, ハーネス: ${row[10]}, NOS: ${row[11]}
-              <hr>
+          results.innerHTML = data.map(row => `
+            <div style="margin-bottom:12px;">
+              日時: ${row.date} / 記録者: ${row.userName} <br />
+              車両番号: ${row.vehicleNumber} / オーナー名: ${row.ownerName} <br />
+              エンジン: ${row.engine || ""} <br />
+              ブレーキ: ${row.brake || ""} <br />
+              ミッション: ${row.transmission || ""} <br />
+              サス: ${row.suspension || ""} <br />
+              ${["armor", "turbo", "harness", "nos"].filter(k => row[k] === "ON").map(k => ({
+                armor: "アーマー", turbo: "ターボ", harness: "ハーネス", nos: "NOS"
+              }[k])).join(", ")}
             </div>
           `).join("");
-          div.innerHTML = html;
-        } else {
-          div.innerHTML = "検索に失敗しました";
-        }
-      });
+        });
     }
   </script>
 </body>

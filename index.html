@@ -38,6 +38,7 @@
 </head>
 <body>
   <h2>性能カスタム記録フォーム</h2>
+
   <div id="g_id_onload"
     data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
     data-callback="onGoogleSignIn"
@@ -106,31 +107,36 @@
   </form>
 
   <script>
-    let userEmail = "";
     function onGoogleSignIn(response) {
       const idToken = response.credential;
+
       fetch("https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec", {
         method: "POST",
-        mode: "no-cors",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode: "verify", token: idToken })
-      }).then(() => {
-        // フォーム表示とユーザー名制限（セレクトに自分の名前だけ表示）
+      })
+      .then(res => res.text())
+      .then(email => {
+        if (!email.includes("@")) {
+          alert("許可されていないユーザーです。");
+          return;
+        }
+
         fetch("https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec?mode=getUsers")
           .then(res => res.json())
-          .then(data => {
-            const user = data.find(u => u.email === response.clientIdPayload?.email);
+          .then(users => {
+            const user = users.find(u => u.email === email);
             if (!user) {
-              alert("許可されていないユーザーです。");
+              alert("ユーザー名が見つかりません。");
               return;
             }
-            userEmail = user.email;
             const writerSelect = document.getElementById("writer");
             writerSelect.innerHTML = `<option value="${user.name}">${user.name}</option>`;
             document.getElementById("customForm").style.display = "block";
           });
-      }).catch(err => {
-        console.error("ログイン処理でエラー:", err);
+      })
+      .catch(err => {
+        console.error("ログインエラー:", err);
         alert("ログインに失敗しました。");
       });
     }
@@ -153,11 +159,13 @@
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ mode: "submit", data })
-      }).then(() => {
+      })
+      .then(() => {
         alert("送信しました！");
         form.reset();
-      }).catch(err => {
-        console.error("送信エラー:", err);
+      })
+      .catch(err => {
+        console.error("送信失敗:", err);
         alert("送信に失敗しました。");
       });
     }

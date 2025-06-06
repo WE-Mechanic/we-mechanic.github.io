@@ -1,35 +1,36 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html>
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body {
-      font-family: sans-serif;
-      margin: 20px;
+    input[type="text"], select {
+      width: 25%;
+      border: none;
+      border-bottom: 1px solid #ccc;
+      margin-bottom: 10px;
     }
     table {
       border-collapse: collapse;
-      width: 100%;
-      margin-bottom: 1em;
+      margin-top: 10px;
     }
     td {
       padding: 4px 8px;
-      vertical-align: middle;
+      text-align: left;
     }
-    .input-quarter {
-      width: 25%;
+    .section {
+      margin-top: 20px;
     }
-    .tier-row td {
-      padding: 4px 2px;
+    .checkbox-group {
+      display: flex;
+      align-items: center;
+      gap: 8px;
     }
   </style>
 </head>
 <body>
   <h2>性能カスタム記録フォーム</h2>
-
   <div id="g_id_onload"
        data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
        data-callback="onSignIn"
@@ -37,123 +38,133 @@
   </div>
   <div class="g_id_signin" data-type="standard"></div>
 
-  <div id="formArea" style="display: none;">
-    <form id="customForm">
+  <div id="formArea" style="display:none;">
+    <label>記録者名：</label>
+    <select id="owner" disabled></select><br>
+
+    <label>オーナー名：</label>
+    <input type="text" id="ownerName"><br>
+
+    <label>車両番号：</label>
+    <input type="text" id="vehicleNumber"><br>
+
+    <div class="section">
       <table>
         <tr>
-          <td>記録者名：</td>
-          <td><select id="recorder" name="recorder" class="input-quarter" required></select></td>
+          <td>エンジン：</td>
+          <td>
+            <label><input type="radio" name="engine" value="1">ティア1</label>
+            <label><input type="radio" name="engine" value="2">ティア2</label>
+            <label><input type="radio" name="engine" value="3">ティア3</label>
+            <label><input type="radio" name="engine" value="4">ティア4</label>
+            <label><input type="radio" name="engine" value="5">ティア5</label>
+          </td>
         </tr>
         <tr>
-          <td>車両番号：</td>
-          <td><input type="text" id="vehicleNumber" name="vehicleNumber" class="input-quarter" required /></td>
-        </tr>
-      </table>
-
-      <table border="1">
-        <tr class="tier-row">
-          <td>エンジン</td>
+          <td>ブレーキ：</td>
           <td>
-            <label><input type="radio" name="engine" value="1" required />ティア1</label>
-            <label><input type="radio" name="engine" value="2" />ティア2</label>
-            <label><input type="radio" name="engine" value="3" />ティア3</label>
-            <label><input type="radio" name="engine" value="4" />ティア4</label>
-            <label><input type="radio" name="engine" value="5" />ティア5</label>
+            <label><input type="radio" name="brake" value="1">ティア1</label>
+            <label><input type="radio" name="brake" value="2">ティア2</label>
+            <label><input type="radio" name="brake" value="3">ティア3</label>
           </td>
         </tr>
-        <tr class="tier-row">
-          <td>ブレーキ</td>
+        <tr>
+          <td>トランスミッション：</td>
           <td>
-            <label><input type="radio" name="brake" value="1" required />ティア1</label>
-            <label><input type="radio" name="brake" value="2" />ティア2</label>
-            <label><input type="radio" name="brake" value="3" />ティア3</label>
+            <label><input type="radio" name="transmission" value="1">ティア1</label>
+            <label><input type="radio" name="transmission" value="2">ティア2</label>
+            <label><input type="radio" name="transmission" value="3">ティア3</label>
+            <label><input type="radio" name="transmission" value="4">ティア4</label>
           </td>
         </tr>
-        <tr class="tier-row">
-          <td>トランスミッション</td>
+        <tr>
+          <td>サスペンション：</td>
           <td>
-            <label><input type="radio" name="transmission" value="1" required />ティア1</label>
-            <label><input type="radio" name="transmission" value="2" />ティア2</label>
-            <label><input type="radio" name="transmission" value="3" />ティア3</label>
+            <label><input type="radio" name="suspension" value="1">ティア1</label>
+            <label><input type="radio" name="suspension" value="2">ティア2</label>
+            <label><input type="radio" name="suspension" value="3">ティア3</label>
+            <label><input type="radio" name="suspension" value="4">ティア4</label>
+            <label><input type="radio" name="suspension" value="5">ティア5</label>
           </td>
         </tr>
-        <tr class="tier-row">
-          <td>サスペンション</td>
-          <td>
-            <label><input type="radio" name="suspension" value="1" required />ティア1</label>
-            <label><input type="radio" name="suspension" value="2" />ティア2</label>
-            <label><input type="radio" name="suspension" value="3" />ティア3</label>
-            <label><input type="radio" name="suspension" value="4" />ティア4</label>
-          </td>
-        </tr>
-        <tr class="tier-row">
-          <td>追加パーツ</td>
-          <td>
-            <label><input type="checkbox" name="armor" />アーマー</label>
-            <label><input type="checkbox" name="turbo" />ターボ</label>
-            <label><input type="checkbox" name="harness" />ハーネス</label>
-            <label><input type="checkbox" name="nos" />NOS</label>
+        <tr>
+          <td>その他：</td>
+          <td class="checkbox-group">
+            <label><input type="checkbox" id="armor">アーマー</label>
+            <label><input type="checkbox" id="turbo">ターボ</label>
+            <label><input type="checkbox" id="harness">ハーネス</label>
+            <label><input type="checkbox" id="nos">NOS</label>
           </td>
         </tr>
       </table>
+    </div>
 
-      <button type="submit">送信</button>
-    </form>
-    <p id="status"></p>
+    <button onclick="submitForm()">記録</button>
+
+    <div class="section">
+      <h3>検索</h3>
+      <label>車両番号またはオーナー名：</label>
+      <input type="text" id="searchQuery">
+      <button onclick="searchRecords()">検索</button>
+      <div id="searchResults"></div>
+    </div>
   </div>
 
   <script>
-    let idToken = "";
+    let userToken = "";
 
     function onSignIn(response) {
-      idToken = response.credential;
-
-      fetch("https://script.google.com/macros/s/AKfycbxc2es42hNP6L5_e8Hx3VbsjvgTEmi9mxqvyUY48GgBWZiJum1fduJtQREeuLVTWA5B/exec", {
+      userToken = response.credential;
+      fetch("https://script.google.com/macros/s/AKfycbwclG9RoxME0Dot_Ttufzlptg7eKvl3Vt6MneNxQJxeKbk3xWYd0RvbVzcrXYiwcWfH/exec", {
         method: "POST",
-        body: JSON.stringify({ mode: "auth", token: idToken }),
+        body: JSON.stringify({ token: userToken, mode: "auth" }),
       })
-        .then(res => res.json())
-        .then(data => {
-          if (data.status === "success") {
-            const select = document.getElementById("recorder");
-            data.names.forEach(name => {
-              const opt = document.createElement("option");
-              opt.value = name;
-              opt.textContent = name;
-              select.appendChild(opt);
-            });
-            select.value = data.userName;
-            select.disabled = true;
-            document.getElementById("formArea").style.display = "block";
-          } else {
-            document.body.innerHTML = "<p>アクセスが許可されていません。</p>";
-          }
-        });
+      .then(res => res.json())
+      .then(data => {
+        if (data.status === "success") {
+          document.getElementById("formArea").style.display = "block";
+          const ownerSelect = document.getElementById("owner");
+          ownerSelect.innerHTML = `<option value="${data.userName}">${data.userName}</option>`;
+        } else {
+          alert("アクセスが許可されていません");
+        }
+      });
     }
 
-    document.getElementById("customForm").addEventListener("submit", function (e) {
-      e.preventDefault();
-      const formData = new FormData(this);
-      const data = {};
-      formData.forEach((value, key) => {
-        data[key] = value;
-      });
-      data.armor = formData.has("armor");
-      data.turbo = formData.has("turbo");
-      data.harness = formData.has("harness");
-      data.nos = formData.has("nos");
-      data.token = idToken;
+    function submitForm() {
+      const payload = {
+        token: userToken,
+        vehicleNumber: document.getElementById("vehicleNumber").value,
+        ownerName: document.getElementById("ownerName").value,
+        engine: document.querySelector('input[name="engine"]:checked')?.value || "",
+        brake: document.querySelector('input[name="brake"]:checked')?.value || "",
+        transmission: document.querySelector('input[name="transmission"]:checked')?.value || "",
+        suspension: document.querySelector('input[name="suspension"]:checked')?.value || "",
+        armor: document.getElementById("armor").checked,
+        turbo: document.getElementById("turbo").checked,
+        harness: document.getElementById("harness").checked,
+        nos: document.getElementById("nos").checked
+      };
 
-      fetch("https://script.google.com/macros/s/AKfycbxc2es42hNP6L5_e8Hx3VbsjvgTEmi9mxqvyUY48GgBWZiJum1fduJtQREeuLVTWA5B/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbwclG9RoxME0Dot_Ttufzlptg7eKvl3Vt6MneNxQJxeKbk3xWYd0RvbVzcrXYiwcWfH/exec", {
         method: "POST",
-        body: JSON.stringify(data),
+        body: JSON.stringify(payload),
       })
-        .then(res => res.text())
-        .then(msg => {
-          document.getElementById("status").textContent = msg;
-          document.getElementById("customForm").reset();
+      .then(res => res.text())
+      .then(msg => {
+        alert(msg);
+      });
+    }
+
+    function searchRecords() {
+      const query = document.getElementById("searchQuery").value;
+      fetch(`https://script.google.com/macros/s/AKfycbwclG9RoxME0Dot_Ttufzlptg7eKvl3Vt6MneNxQJxeKbk3xWYd0RvbVzcrXYiwcWfH/exec?query=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+          const results = data.map(row => `<div>${row.join(" / ")}</div>`).join("");
+          document.getElementById("searchResults").innerHTML = results || "該当なし";
         });
-    });
+    }
   </script>
 </body>
 </html>

@@ -5,83 +5,157 @@
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    /* 既存デザインを維持 */
-    body { font-family: sans-serif; margin: 2em; }
-    .input-row { display: flex; align-items: center; margin-bottom: 0.5em; }
-    label { width: 6em; display: inline-block; }
-    input[type="text"], select { width: 200px; padding: 2px; }
-    table { border-collapse: collapse; width: auto; }
-    td, th { padding: 4px 8px; text-align: left; }
-    .radio-group label, .checkbox-group label { margin-right: 10px; }
-    .submit-btn { margin-top: 1em; }
-    .search-section { margin-top: 2em; border-top: 1px solid #ccc; padding-top: 1em; }
-    .results { margin-top: 1em; white-space: pre-wrap; font-family: monospace; }
+    body { font-family: sans-serif; padding: 20px; }
+    .section { margin-bottom: 20px; }
+    label { display: inline-block; width: 100px; }
+    table { border-collapse: collapse; width: 100%; max-width: 600px; }
+    td { padding: 4px; vertical-align: middle; }
+    input[type="text"], select { width: 100%; padding: 4px; }
   </style>
 </head>
 <body>
+
+<div id="loginArea" class="section">
+  <div id="g_id_onload"
+       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+       data-callback="handleCredentialResponse"
+       data-auto_prompt="true">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+</div>
+
+<div id="formArea" style="display: none;" class="section">
   <h2>性能カスタム記録フォーム</h2>
+  <form id="customForm">
+    <table>
+      <tr>
+        <td><label for="recorder">記録者名</label></td>
+        <td><input type="text" id="recorder" name="recorder" readonly></td>
+      </tr>
+      <tr>
+        <td><label for="carNumber">車両番号</label></td>
+        <td><input type="text" id="carNumber" name="carNumber" required></td>
+      </tr>
+      <tr>
+        <td><label for="owner">オーナー名</label></td>
+        <td><input type="text" id="owner" name="owner" required></td>
+      </tr>
+    </table>
 
-  <!-- ログインエリア -->
-  <div id="login-area">
-    <div id="g_id_onload"
-      data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
-      data-callback="handleCredentialResponse"
-      data-auto_prompt="true">
-    </div>
-    <div class="g_id_signin" data-type="standard"></div>
-  </div>
+    <h4>性能パーツ</h4>
+    <table border="1">
+      <tr>
+        <td>エンジン</td>
+        <td>
+          <label><input type="radio" name="engine" value="ティア1">ティア1</label>
+          <label><input type="radio" name="engine" value="ティア2">ティア2</label>
+          <label><input type="radio" name="engine" value="ティア3">ティア3</label>
+          <label><input type="radio" name="engine" value="ティア4">ティア4</label>
+          <label><input type="radio" name="engine" value="ティア5">ティア5</label>
+        </td>
+      </tr>
+      <tr>
+        <td>ブレーキ</td>
+        <td>
+          <label><input type="radio" name="brake" value="ティア1">ティア1</label>
+          <label><input type="radio" name="brake" value="ティア2">ティア2</label>
+          <label><input type="radio" name="brake" value="ティア3">ティア3</label>
+        </td>
+      </tr>
+      <tr>
+        <td>トランスミッション</td>
+        <td>
+          <label><input type="radio" name="transmission" value="ティア1">ティア1</label>
+          <label><input type="radio" name="transmission" value="ティア2">ティア2</label>
+          <label><input type="radio" name="transmission" value="ティア3">ティア3</label>
+          <label><input type="radio" name="transmission" value="ティア4">ティア4</label>
+        </td>
+      </tr>
+      <tr>
+        <td>サスペンション</td>
+        <td>
+          <label><input type="radio" name="suspension" value="ティア1">ティア1</label>
+          <label><input type="radio" name="suspension" value="ティア2">ティア2</label>
+          <label><input type="radio" name="suspension" value="ティア3">ティア3</label>
+          <label><input type="radio" name="suspension" value="ティア4">ティア4</label>
+          <label><input type="radio" name="suspension" value="ティア5">ティア5</label>
+        </td>
+      </tr>
+      <tr>
+        <td>その他</td>
+        <td>
+          <label><input type="checkbox" name="armor">アーマー</label>
+          <label><input type="checkbox" name="turbo">ターボ</label>
+          <label><input type="checkbox" name="harness">ハーネス</label>
+          <label><input type="checkbox" name="nos">NOS</label>
+        </td>
+      </tr>
+    </table>
 
-  <!-- フォーム & 検索（ログイン後に表示） -->
-  <div id="main-area" style="display:none">
-    <form id="customForm">
-      <!-- フォーム内容は一切変更なし -->
-      <!-- ... (そのままコピーしてください) ... -->
-    </form>
+    <br>
+    <button type="submit">記録する</button>
+  </form>
+</div>
 
-    <div class="search-section">
-      <h3>検索</h3>
-      <div class="input-row">
-        <label for="search">車両番号 or オーナー名</label>
-        <input type="text" id="search">
-        <button type="button" id="searchBtn">検索</button>
-      </div>
-      <div id="results" class="results"></div>
-    </div>
-  </div>
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbxAe0krxCnwHELNyKfcxPvhd716SN_mHFBy3xGZP7RVX4h2weENNneq1lKWdlkrk5Qj/exec";
 
-  <script>
-    const form = document.getElementById("customForm");
-    const mainArea = document.getElementById("main-area");
-    const loginArea = document.getElementById("login-area");
-    const recorderSelect = document.getElementById("recorder");
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwWK8atUgk8dspEPleVGMemgE-iJuwXX701EjkSFQyAVeCsZtbFTOKOn2YWzNSSFfNt/exec"; // 実際のURLに差し替えてください
+function handleCredentialResponse(response) {
+  const idToken = response.credential;
 
-    function handleCredentialResponse(response) {
-      fetch(`${GAS_URL}?mode=verify`, {
+  fetch("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + idToken)
+    .then(res => res.json())
+    .then(user => {
+      const email = user.email;
+
+      fetch(GAS_URL + "?mode=verify", {
         method: "POST",
-        headers: {"Content-Type": "application/json"},
-        body: JSON.stringify({ id_token: response.credential })
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ email })
       })
       .then(res => res.json())
       .then(data => {
-        if (data.allowedNames) {
-          // ログイン成功時にのみフォームと検索表示
-          loginArea.style.display = "none";
-          mainArea.style.display = "block";
-          recorderSelect.innerHTML = "";
-          data.allowedNames.forEach(name => {
-            const opt = document.createElement("option");
-            opt.value = opt.textContent = name;
-            recorderSelect.appendChild(opt);
-          });
+        if (data.allowed) {
+          document.getElementById("loginArea").style.display = "none";
+          document.getElementById("formArea").style.display = "block";
+          document.getElementById("recorder").value = data.name;
         } else {
-          alert("アクセス権がありません");
+          alert("アクセス権がありません。");
         }
-      })
-      .catch(() => alert("ログイン認証エラー"));
-    }
+      });
+    });
+}
 
-    // 以降、submit と検索の fetch 処理はそのまま維持
-  </script>
+document.getElementById("customForm").addEventListener("submit", function(e) {
+  e.preventDefault();
+
+  const formData = new FormData(this);
+  const body = {
+    recorder: formData.get("recorder"),
+    carNumber: formData.get("carNumber"),
+    owner: formData.get("owner"),
+    engine: formData.get("engine"),
+    brake: formData.get("brake"),
+    transmission: formData.get("transmission"),
+    suspension: formData.get("suspension"),
+    armor: formData.get("armor") !== null,
+    turbo: formData.get("turbo") !== null,
+    harness: formData.get("harness") !== null,
+    nos: formData.get("nos") !== null
+  };
+
+  fetch(GAS_URL + "?mode=submit", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(body)
+  })
+  .then(res => res.text())
+  .then(res => {
+    alert("記録が完了しました！");
+    document.getElementById("customForm").reset();
+  });
+});
+</script>
+
 </body>
 </html>

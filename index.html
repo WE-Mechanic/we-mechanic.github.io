@@ -108,7 +108,7 @@
     function onSignIn(response) {
       idToken = response.credential;
 
-      fetch("https://script.google.com/macros/s/AKfycbwQPVM_kgy-GCz95FNKpkVDmPWaTstVQi0zMN6vyb_5OZ29rnAyC3tjxXAa4baiZOyF/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbxc2es42hNP6L5_e8Hx3VbsjvgTEmi9mxqvyUY48GgBWZiJum1fduJtQREeuLVTWA5B/exec", {
         method: "POST",
         body: JSON.stringify({ mode: "auth", token: idToken }),
       })
@@ -144,7 +144,7 @@
       data.nos = formData.has("nos");
       data.token = idToken;
 
-      fetch("https://script.google.com/macros/s/AKfycbwQPVM_kgy-GCz95FNKpkVDmPWaTstVQi0zMN6vyb_5OZ29rnAyC3tjxXAa4baiZOyF/exec", {
+      fetch("https://script.google.com/macros/s/AKfycbxc2es42hNP6L5_e8Hx3VbsjvgTEmi9mxqvyUY48GgBWZiJum1fduJtQREeuLVTWA5B/exec", {
         method: "POST",
         body: JSON.stringify(data),
       })

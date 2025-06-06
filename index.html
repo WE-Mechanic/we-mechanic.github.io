@@ -1,194 +1,177 @@
 <!DOCTYPE html>
 <html lang="ja">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta charset="UTF-8">
   <title>性能カスタム記録フォーム</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-      background-color: #f4f4f4;
-    }
-    form {
-      background-color: #fff;
-      padding: 20px;
-      border-radius: 12px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.1);
-      max-width: 600px;
-      margin: auto;
-    }
-    label {
-      display: block;
-      margin-top: 10px;
-      font-weight: bold;
-    }
-    input, select {
-      width: 100%;
-      padding: 8px;
-      margin-top: 5px;
-      border-radius: 6px;
-      border: 1px solid #ccc;
-    }
     table {
-      width: 100%;
-      margin-top: 20px;
       border-collapse: collapse;
+      width: 100%;
     }
-    th, td {
+    td, th {
+      border: 1px solid #999;
       padding: 8px;
-      text-align: left;
     }
-    th {
-      background-color: #f0f0f0;
+    input[type="text"], select {
+      width: 100%;
+      box-sizing: border-box;
     }
-    button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      border-radius: 8px;
-      border: none;
-      background-color: #4CAF50;
-      color: white;
-      font-size: 16px;
+    .form-section {
+      margin-bottom: 20px;
     }
   </style>
 </head>
 <body>
-  <h1>性能カスタム記録フォーム</h1>
-  <form id="customForm">
-    <label for="recorder">記入者名</label>
-    <select id="recorder" name="recorder" required></select>
+  <h2>性能カスタム記録フォーム</h2>
 
-    <label for="vehicleNumber">車両番号</label>
-    <input type="text" id="vehicleNumber" name="vehicleNumber" required />
+  <div id="g_id_onload"
+       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+       data-context="signin"
+       data-callback="handleCredentialResponse"
+       data-auto_prompt="false">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
 
-    <label for="owner">オーナー名</label>
-    <input type="text" id="owner" name="owner" required />
+  <div id="formContainer" style="display:none;">
+    <form id="customForm">
+      <div class="form-section">
+        <label>車両番号: <input type="text" name="vehicleNumber" required></label><br><br>
+        <label>オーナー名: <input type="text" name="ownerName" required></label><br><br>
+        <label>記入者名:
+          <select name="writerName" id="writerName" required></select>
+        </label>
+      </div>
 
-    <table>
-  <tr>
-    <td>エンジン</td>
-    <td>
-      <label style="margin-right: 10px;"><input type="radio" name="engine" value="1" required> ティア1</label>
-      <label style="margin-right: 10px;"><input type="radio" name="engine" value="2"> ティア2</label>
-      <label style="margin-right: 10px;"><input type="radio" name="engine" value="3"> ティア3</label>
-      <label style="margin-right: 10px;"><input type="radio" name="engine" value="4"> ティア4</label>
-      <label><input type="radio" name="engine" value="5"> ティア5</label>
-    </td>
-  </tr>
-  <tr>
-    <td>ブレーキ</td>
-    <td>
-      <label style="margin-right: 10px;"><input type="radio" name="brake" value="1" required> ティア1</label>
-      <label style="margin-right: 10px;"><input type="radio" name="brake" value="2"> ティア2</label>
-      <label><input type="radio" name="brake" value="3"> ティア3</label>
-    </td>
-  </tr>
-  <tr>
-    <td>トランスミッション</td>
-    <td>
-      <label style="margin-right: 10px;"><input type="radio" name="transmission" value="1" required> ティア1</label>
-      <label style="margin-right: 10px;"><input type="radio" name="transmission" value="2"> ティア2</label>
-      <label style="margin-right: 10px;"><input type="radio" name="transmission" value="3"> ティア3</label>
-      <label><input type="radio" name="transmission" value="4"> ティア4</label>
-    </td>
-  </tr>
-  <tr>
-    <td>サスペンション</td>
-    <td>
-      <label style="margin-right: 10px;"><input type="radio" name="suspension" value="1" required> ティア1</label>
-      <label style="margin-right: 10px;"><input type="radio" name="suspension" value="2"> ティア2</label>
-      <label style="margin-right: 10px;"><input type="radio" name="suspension" value="3"> ティア3</label>
-      <label style="margin-right: 10px;"><input type="radio" name="suspension" value="4"> ティア4</label>
-      <label><input type="radio" name="suspension" value="5"> ティア5</label>
-    </td>
-  </tr>
-  <tr>
-    <td>その他</td>
-    <td>
-      <label style="margin-right: 10px;"><input type="checkbox" name="armor"> アーマー</label>
-      <label style="margin-right: 10px;"><input type="checkbox" name="turbo"> ターボ</label>
-      <label style="margin-right: 10px;"><input type="checkbox" name="harness"> ハーネス</label>
-      <label><input type="checkbox" name="nos"> NOS</label>
-    </td>
-  </tr>
-</table>
+      <table>
+        <tr>
+          <th>項目</th>
+          <th colspan="5">ティア</th>
+        </tr>
+        <tr>
+          <td>エンジン</td>
+          <td><label><input type="radio" name="engine" value="1" required> ティア1</label></td>
+          <td><label><input type="radio" name="engine" value="2"> ティア2</label></td>
+          <td><label><input type="radio" name="engine" value="3"> ティア3</label></td>
+          <td><label><input type="radio" name="engine" value="4"> ティア4</label></td>
+          <td><label><input type="radio" name="engine" value="5"> ティア5</label></td>
+        </tr>
+        <tr>
+          <td>ブレーキ</td>
+          <td><label><input type="radio" name="brake" value="1" required> ティア1</label></td>
+          <td><label><input type="radio" name="brake" value="2"> ティア2</label></td>
+          <td><label><input type="radio" name="brake" value="3"> ティア3</label></td>
+          <td colspan="2"></td>
+        </tr>
+        <tr>
+          <td>トランスミッション</td>
+          <td><label><input type="radio" name="transmission" value="1" required> ティア1</label></td>
+          <td><label><input type="radio" name="transmission" value="2"> ティア2</label></td>
+          <td><label><input type="radio" name="transmission" value="3"> ティア3</label></td>
+          <td><label><input type="radio" name="transmission" value="4"> ティア4</label></td>
+          <td></td>
+        </tr>
+        <tr>
+          <td>サスペンション</td>
+          <td><label><input type="radio" name="suspension" value="1" required> ティア1</label></td>
+          <td><label><input type="radio" name="suspension" value="2"> ティア2</label></td>
+          <td><label><input type="radio" name="suspension" value="3"> ティア3</label></td>
+          <td><label><input type="radio" name="suspension" value="4"> ティア4</label></td>
+          <td><label><input type="radio" name="suspension" value="5"> ティア5</label></td>
+        </tr>
+        <tr>
+          <td>アーマー</td>
+          <td colspan="5"><input type="checkbox" name="armor"></td>
+        </tr>
+        <tr>
+          <td>ターボ</td>
+          <td colspan="5"><input type="checkbox" name="turbo"></td>
+        </tr>
+        <tr>
+          <td>ハーネス</td>
+          <td colspan="5"><input type="checkbox" name="harness"></td>
+        </tr>
+        <tr>
+          <td>NOS</td>
+          <td colspan="5"><input type="checkbox" name="nos"></td>
+        </tr>
+      </table><br>
 
+      <button type="submit">送信</button>
+    </form>
 
-
-    <button type="submit">送信</button>
-  </form>
+    <hr>
+    <h3>記録検索</h3>
+    <form id="searchForm">
+      <label>車両番号またはオーナー名: <input type="text" id="searchQuery" required></label>
+      <button type="submit">検索</button>
+    </form>
+    <div id="searchResults"></div>
+  </div>
 
   <script>
-    const GAS_URL = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
+    let userEmail = "";
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
 
-    async function getEmail() {
-      return new Promise((resolve, reject) => {
-        google.accounts.id.initialize({
-          client_id: "735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com",
-          callback: async (response) => {
-            const decoded = parseJwt(response.credential);
-            resolve(decoded.email);
-          }
-        });
-        google.accounts.id.prompt();
-      });
-    }
-
-    function parseJwt(token) {
-      const base64Url = token.split('.')[1];
-      const base64 = base64Url.replace(/-/g, '+').replace(/_/g, '/');
-      const jsonPayload = decodeURIComponent(atob(base64).split('').map(c =>
-        '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2)
-      ).join(''));
-      return JSON.parse(jsonPayload);
-    }
-
-    function getUserName(email) {
-      fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`)
+    function handleCredentialResponse(response) {
+      const idToken = response.credential;
+      fetch("https://www.googleapis.com/oauth2/v3/tokeninfo?id_token=" + idToken)
         .then(res => res.json())
         .then(data => {
-          if (!data.name) {
-            document.body.innerHTML = "<h2>アクセス権限がありません</h2>";
-            return;
-          }
-          const recorderSelect = document.getElementById("recorder");
-          recorderSelect.innerHTML = `<option value="${data.name}">${data.name}</option>`;
-        })
-        .catch(error => {
-          console.error('ユーザー取得エラー:', error);
+          userEmail = data.email;
+          document.getElementById("formContainer").style.display = "block";
+          loadWriterList();
         });
     }
 
-    window.onload = async () => {
-      const email = await getEmail();
-      getUserName(email);
-    };
+    function loadWriterList() {
+      fetch(scriptURL + "?mode=allowedUsers")
+        .then(res => res.json())
+        .then(data => {
+          const allowedUsers = data.allowedUsers;
+          const writer = allowedUsers.find(u => u.email === userEmail);
+          if (!writer) {
+            alert("このアカウントでは記入できません。");
+            document.getElementById("formContainer").style.display = "none";
+            return;
+          }
+          const select = document.getElementById("writerName");
+          select.innerHTML = "";
+          const option = document.createElement("option");
+          option.value = writer.name;
+          option.textContent = writer.name;
+          select.appendChild(option);
+        });
+    }
 
-    document.getElementById("customForm").addEventListener("submit", async (e) => {
+    document.getElementById("customForm").addEventListener("submit", function (e) {
       e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-      data.armor = form.armor.checked ? "ON" : "OFF";
-      data.turbo = form.turbo.checked ? "ON" : "OFF";
-      data.harness = form.harness.checked ? "ON" : "OFF";
-      data.nos = form.nos.checked ? "ON" : "OFF";
-
-      const response = await fetch(GAS_URL, {
+      const formData = new FormData(this);
+      fetch(scriptURL, {
         method: "POST",
-        body: JSON.stringify(data),
-        headers: { "Content-Type": "application/json" }
+        body: formData
+      })
+      .then(res => res.text())
+      .then(() => {
+        alert("送信しました！");
+        this.reset();
       });
+    });
 
-      if (response.ok) {
-        alert("送信が完了しました");
-        form.reset();
-      } else {
-        alert("送信に失敗しました");
-      }
+    document.getElementById("searchForm").addEventListener("submit", function (e) {
+      e.preventDefault();
+      const query = document.getElementById("searchQuery").value;
+      fetch(`${scriptURL}?mode=search&query=${encodeURIComponent(query)}`)
+        .then(res => res.json())
+        .then(data => {
+          const container = document.getElementById("searchResults");
+          if (data.results.length === 0) {
+            container.innerHTML = "<p>該当する記録はありません。</p>";
+          } else {
+            container.innerHTML = "<ul>" + data.results.map(r => `<li>${r}</li>`).join("") + "</ul>";
+          }
+        });
     });
   </script>
-  <script src="https://accounts.google.com/gsi/client" async defer></script>
 </body>
 </html>

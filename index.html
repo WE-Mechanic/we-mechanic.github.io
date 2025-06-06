@@ -109,7 +109,7 @@
 
     function onSignIn(response) {
       const id_token = response.credential;
-      fetch('https://script.google.com/macros/s/AKfycbyxYVuGyQmB_c1f-vAUaKpwatxmX5VqSoG-RG3ctsqxgkcWLNs580vMmNhzX5mEGWch/exec', {
+      fetch('https://script.google.com/macros/s/AKfycbztiWXcmnzFFmA7Q6tBIE_ixpWVFVukvW7ZcDoQQYZTWAWsNL_izy9fvYLSc8sIMgQd/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ mode: 'getUserInfo', token: id_token })
@@ -151,7 +151,7 @@
         nos: form.nos.checked
       };
 
-      fetch('https://script.google.com/macros/s/AKfycbyxYVuGyQmB_c1f-vAUaKpwatxmX5VqSoG-RG3ctsqxgkcWLNs580vMmNhzX5mEGWch/exec', {
+      fetch('https://script.google.com/macros/s/AKfycbztiWXcmnzFFmA7Q6tBIE_ixpWVFVukvW7ZcDoQQYZTWAWsNL_izy9fvYLSc8sIMgQd/exec', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data)
@@ -168,7 +168,7 @@
       const query = document.getElementById("searchInput").value;
       if (!query) return;
 
-      fetch(`https://script.google.com/macros/s/AKfycbyxYVuGyQmB_c1f-vAUaKpwatxmX5VqSoG-RG3ctsqxgkcWLNs580vMmNhzX5mEGWch/exec?mode=search&query=${encodeURIComponent(query)}`)
+      fetch(`https://script.google.com/macros/s/AKfycbztiWXcmnzFFmA7Q6tBIE_ixpWVFVukvW7ZcDoQQYZTWAWsNL_izy9fvYLSc8sIMgQd/exec?mode=search&query=${encodeURIComponent(query)}`)
         .then(res => res.json())
         .then(data => {
           const resultsDiv = document.getElementById("results");

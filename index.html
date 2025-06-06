@@ -30,21 +30,33 @@
       font-size: 16px;
     }
   </style>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
   <script>
-    function onLoad() {
-      google.script.run.withSuccessHandler(function(name) {
-        if (name) {
-          document.getElementById("writer").value = name;
-        } else {
-          alert("許可されていないユーザーです。");
-          document.getElementById("formContainer").style.display = "none";
-        }
-      }).getUserName();
+    const GAS_URL = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
+    let userEmail = "";
+
+    function handleCredentialResponse(response) {
+      const decoded = JSON.parse(atob(response.credential.split('.')[1]));
+      userEmail = decoded.email;
+
+      fetch(`${GAS_URL}?email=${encodeURIComponent(userEmail)}`)
+        .then(res => res.text())
+        .then(name => {
+          if (!name) {
+            alert("許可されていないユーザーです。");
+            document.getElementById("formContainer").style.display = "none";
+          } else {
+            document.getElementById("writer").value = name;
+          }
+        })
+        .catch(err => {
+          alert("ユーザー確認エラー");
+          console.error(err);
+        });
     }
 
     function submitCustom() {
       const data = {
-        writer: document.getElementById("writer").value,
         carNumber: document.getElementById("carNumber").value,
         engine: getRadioValue("engine"),
         brake: getRadioValue("brake"),
@@ -56,10 +68,22 @@
         nos: document.getElementById("nos").checked
       };
 
-      google.script.run.withSuccessHandler(function(msg) {
+      fetch(`${GAS_URL}?email=${encodeURIComponent(userEmail)}`, {
+        method: "POST",
+        body: JSON.stringify(data),
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+      .then(res => res.text())
+      .then(msg => {
         alert(msg);
         document.getElementById("customForm").reset();
-      }).submitForm(data);
+      })
+      .catch(err => {
+        alert("送信エラー");
+        console.error(err);
+      });
     }
 
     function getRadioValue(name) {
@@ -69,13 +93,26 @@
       }
       return "";
     }
-
-    window.onload = onLoad;
   </script>
 </head>
 <body>
   <h2>性能カスタム記録フォーム</h2>
-  <div id="formContainer">
+
+  <div id="g_id_onload"
+       data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+       data-callback="handleCredentialResponse"
+       data-auto_prompt="true">
+  </div>
+  <div class="g_id_signin"
+       data-type="standard"
+       data-size="large"
+       data-theme="outline"
+       data-text="signin_with"
+       data-shape="rectangular"
+       data-logo_alignment="left">
+  </div>
+
+  <div id="formContainer" style="margin-top:20px;">
     <form id="customForm" onsubmit="event.preventDefault(); submitCustom();">
       <table border="1">
         <tr>

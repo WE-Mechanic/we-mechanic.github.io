@@ -1,141 +1,166 @@
 <!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="UTF-8">
-    <title>性能カスタム記録フォーム</title>
-    <meta name="google-signin-client_id" content="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com">
-    <script src="https://accounts.google.com/gsi/client" async defer></script>
-    <style>
-      body { font-family: Arial, sans-serif; }
-      input, select, button { border: none; }
-      table { border-collapse: collapse; margin-top: 10px; }
-      td { padding: 4px 8px; }
-      label { margin-right: 8px; }
-    </style>
-  </head>
-  <body>
-    <div id="g_id_onload"
-         data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
-         data-callback="onGoogleSignIn"
-         data-auto_prompt="false">
+<html lang="ja">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>性能カスタム記録フォーム</title>
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 20px;
+    }
+    input[type="text"], select {
+      width: 25%;
+      margin-bottom: 10px;
+      padding: 5px;
+      border: none;
+      border-bottom: 1px solid #ccc;
+    }
+    table {
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    td {
+      padding: 5px 10px;
+    }
+    .radio-group label {
+      margin-right: 10px;
+    }
+    .checkbox-group label {
+      margin-right: 20px;
+    }
+    button {
+      margin-top: 15px;
+      padding: 5px 15px;
+    }
+  </style>
+</head>
+<body>
+  <h2>性能カスタム記録フォーム</h2>
+  <div id="g_id_onload"
+    data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
+    data-callback="onGoogleSignIn"
+    data-auto_prompt="false">
+  </div>
+  <div class="g_id_signin" data-type="standard"></div>
+
+  <form id="customForm" style="display:none;" onsubmit="handleSubmit(event)">
+    <div>
+      <label>記入者名:</label>
+      <select id="writer" name="writer" required></select>
     </div>
-    <div class="g_id_signin" data-type="standard"></div>
+    <div>
+      <label>車両番号:</label>
+      <input type="text" id="carNumber" name="carNumber" required>
+    </div>
+    <table border="1">
+      <tr>
+        <td>エンジン</td>
+        <td class="radio-group">
+          <label><input type="radio" name="engine" value="1" required>ティア1</label>
+          <label><input type="radio" name="engine" value="2">ティア2</label>
+          <label><input type="radio" name="engine" value="3">ティア3</label>
+          <label><input type="radio" name="engine" value="4">ティア4</label>
+          <label><input type="radio" name="engine" value="5">ティア5</label>
+        </td>
+      </tr>
+      <tr>
+        <td>ブレーキ</td>
+        <td class="radio-group">
+          <label><input type="radio" name="brake" value="1" required>ティア1</label>
+          <label><input type="radio" name="brake" value="2">ティア2</label>
+          <label><input type="radio" name="brake" value="3">ティア3</label>
+        </td>
+      </tr>
+      <tr>
+        <td>トランスミッション</td>
+        <td class="radio-group">
+          <label><input type="radio" name="transmission" value="1" required>ティア1</label>
+          <label><input type="radio" name="transmission" value="2">ティア2</label>
+          <label><input type="radio" name="transmission" value="3">ティア3</label>
+          <label><input type="radio" name="transmission" value="4">ティア4</label>
+        </td>
+      </tr>
+      <tr>
+        <td>サスペンション</td>
+        <td class="radio-group">
+          <label><input type="radio" name="suspension" value="1" required>ティア1</label>
+          <label><input type="radio" name="suspension" value="2">ティア2</label>
+          <label><input type="radio" name="suspension" value="3">ティア3</label>
+          <label><input type="radio" name="suspension" value="4">ティア4</label>
+          <label><input type="radio" name="suspension" value="5">ティア5</label>
+        </td>
+      </tr>
+      <tr>
+        <td>その他</td>
+        <td class="checkbox-group">
+          <label><input type="checkbox" name="armor">アーマー</label>
+          <label><input type="checkbox" name="turbo">ターボ</label>
+          <label><input type="checkbox" name="harness">ハーネス</label>
+          <label><input type="checkbox" name="nos">NOS</label>
+        </td>
+      </tr>
+    </table>
+    <button type="submit">送信</button>
+  </form>
 
-    <form id="customForm" style="display:none;">
-      <h2>性能カスタム記録フォーム</h2>
-
-      <label for="owner">記入者名:</label>
-      <select id="owner" name="owner" style="width: 25%;"></select>
-
-      <label for="carNumber">車両番号:</label>
-      <input type="text" id="carNumber" name="carNumber" style="width: 25%;"><br><br>
-
-      <table border="1">
-        <tr>
-          <td>エンジン</td>
-          <td>
-            <label><input type="radio" name="engine" value="1">ティア1</label>
-            <label><input type="radio" name="engine" value="2">ティア2</label>
-            <label><input type="radio" name="engine" value="3">ティア3</label>
-            <label><input type="radio" name="engine" value="4">ティア4</label>
-            <label><input type="radio" name="engine" value="5">ティア5</label>
-          </td>
-        </tr>
-        <tr>
-          <td>ブレーキ</td>
-          <td>
-            <label><input type="radio" name="brake" value="1">ティア1</label>
-            <label><input type="radio" name="brake" value="2">ティア2</label>
-            <label><input type="radio" name="brake" value="3">ティア3</label>
-          </td>
-        </tr>
-        <tr>
-          <td>トランスミッション</td>
-          <td>
-            <label><input type="radio" name="transmission" value="1">ティア1</label>
-            <label><input type="radio" name="transmission" value="2">ティア2</label>
-            <label><input type="radio" name="transmission" value="3">ティア3</label>
-            <label><input type="radio" name="transmission" value="4">ティア4</label>
-          </td>
-        </tr>
-        <tr>
-          <td>サスペンション</td>
-          <td>
-            <label><input type="radio" name="suspension" value="1">ティア1</label>
-            <label><input type="radio" name="suspension" value="2">ティア2</label>
-            <label><input type="radio" name="suspension" value="3">ティア3</label>
-            <label><input type="radio" name="suspension" value="4">ティア4</label>
-            <label><input type="radio" name="suspension" value="5">ティア5</label>
-          </td>
-        </tr>
-        <tr>
-          <td>その他</td>
-          <td>
-            <label><input type="checkbox" name="armor">アーマー</label>
-            <label><input type="checkbox" name="turbo">ターボ</label>
-            <label><input type="checkbox" name="harness">ハーネス</label>
-            <label><input type="checkbox" name="nos">NOS</label>
-          </td>
-        </tr>
-      </table><br>
-
-      <button type="submit">送信</button>
-    </form>
-
-    <script>
-      const scriptURL = 'https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec';
-
-      async function onGoogleSignIn(response) {
-        try {
-          const idToken = response.credential;
-          const result = await fetch(scriptURL, {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ idToken })
-          });
-          const data = await result.json();
-
-          if (data.allowed && data.name) {
+  <script>
+    let userEmail = "";
+    function onGoogleSignIn(response) {
+      const idToken = response.credential;
+      fetch("https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec", {
+        method: "POST",
+        mode: "no-cors",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "verify", token: idToken })
+      }).then(() => {
+        // フォーム表示とユーザー名制限（セレクトに自分の名前だけ表示）
+        fetch("https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec?mode=getUsers")
+          .then(res => res.json())
+          .then(data => {
+            const user = data.find(u => u.email === response.clientIdPayload?.email);
+            if (!user) {
+              alert("許可されていないユーザーです。");
+              return;
+            }
+            userEmail = user.email;
+            const writerSelect = document.getElementById("writer");
+            writerSelect.innerHTML = `<option value="${user.name}">${user.name}</option>`;
             document.getElementById("customForm").style.display = "block";
-            const ownerSelect = document.getElementById("owner");
-            ownerSelect.innerHTML = `<option value="${data.name}">${data.name}</option>`;
-          } else {
-            alert("アクセス権がありません。管理者に連絡してください。");
-          }
-        } catch (err) {
-          console.error("ログイン後の処理でエラー:", err);
-          alert("ログインエラーが発生しました。");
-        }
-      }
+          });
+      }).catch(err => {
+        console.error("ログイン処理でエラー:", err);
+        alert("ログインに失敗しました。");
+      });
+    }
 
-      document.getElementById("customForm").addEventListener("submit", async (e) => {
-        e.preventDefault();
-        const form = e.target;
-        const formData = new FormData(form);
-        const data = {};
-        formData.forEach((value, key) => {
-          if (data[key]) {
-            if (!Array.isArray(data[key])) data[key] = [data[key]];
-            data[key].push(value);
-          } else {
-            data[key] = value;
-          }
-        });
-
-        const response = await fetch(scriptURL, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify(data)
-        });
-
-        const result = await response.json();
-        if (result.status === 'success') {
-          alert('送信完了');
-          form.reset();
+    function handleSubmit(event) {
+      event.preventDefault();
+      const form = document.getElementById("customForm");
+      const formData = new FormData(form);
+      const data = {};
+      formData.forEach((value, key) => {
+        if (data[key]) {
+          if (!Array.isArray(data[key])) data[key] = [data[key]];
+          data[key].push(value);
         } else {
-          alert('送信失敗');
+          data[key] = value;
         }
       });
-    </script>
-  </body>
+
+      fetch("https://script.google.com/macros/s/AKfycbwi1fozO3-AhFM9VIvv3M9yVuJ8Y0Bek2KYHAsppR0Ea9USZqr2A7YrBGX2xSJ-_KqU/exec", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ mode: "submit", data })
+      }).then(() => {
+        alert("送信しました！");
+        form.reset();
+      }).catch(err => {
+        console.error("送信エラー:", err);
+        alert("送信に失敗しました。");
+      });
+    }
+  </script>
+</body>
 </html>

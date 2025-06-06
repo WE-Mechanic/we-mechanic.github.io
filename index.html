@@ -155,6 +155,18 @@
   <script>
     const GAS_URL = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
 
+    function getUserName(email) {
+  fetch(`${GAS_URL}?email=${email}`)
+    .then(res => res.json())
+    .then(data => {
+      console.log("取得した名前：", data.name); // ← ログ確認用
+      document.getElementById('recorder').innerHTML = `<option value="${data.name}">${data.name}</option>`;
+    })
+    .catch(error => {
+      console.error('ユーザー取得エラー:', error);
+    });
+}
+
     window.onload = async () => {
       const email = await getEmail();
       const response = await fetch(`${GAS_URL}?email=${encodeURIComponent(email)}`);

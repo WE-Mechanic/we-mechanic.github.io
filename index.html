@@ -132,29 +132,30 @@
     }
 
     function submitForm() {
-      const payload = {
-        token: userToken,
-        vehicleNumber: document.getElementById("vehicleNumber").value,
-        ownerName: document.getElementById("ownerName").value,
-        engine: document.querySelector('input[name="engine"]:checked')?.value || "",
-        brake: document.querySelector('input[name="brake"]:checked')?.value || "",
-        transmission: document.querySelector('input[name="transmission"]:checked')?.value || "",
-        suspension: document.querySelector('input[name="suspension"]:checked')?.value || "",
-        armor: document.getElementById("armor").checked,
-        turbo: document.getElementById("turbo").checked,
-        harness: document.getElementById("harness").checked,
-        nos: document.getElementById("nos").checked
-      };
+  const payload = {
+    token: userToken,
+    vehicleNumber: document.getElementById("vehicleNumber").value.trim(),
+    ownerName: document.getElementById("ownerName").value.trim(),
+    engine: document.querySelector('input[name="engine"]:checked')?.value || "",
+    brake: document.querySelector('input[name="brake"]:checked')?.value || "",
+    transmission: document.querySelector('input[name="transmission"]:checked')?.value || "",
+    suspension: document.querySelector('input[name="suspension"]:checked')?.value || "",
+    armor: document.getElementById("armor").checked ? "ON" : "OFF",
+    turbo: document.getElementById("turbo").checked ? "ON" : "OFF",
+    harness: document.getElementById("harness").checked ? "ON" : "OFF",
+    nos: document.getElementById("nos").checked ? "ON" : "OFF"
+  };
 
-      fetch("https://script.google.com/macros/s/AKfycbwclG9RoxME0Dot_Ttufzlptg7eKvl3Vt6MneNxQJxeKbk3xWYd0RvbVzcrXYiwcWfH/exec", {
-        method: "POST",
-        body: JSON.stringify(payload),
-      })
-      .then(res => res.text())
-      .then(msg => {
-        alert(msg);
-      });
-    }
+  fetch("https://script.google.com/macros/s/AKfycbwQPVM_kgy-GCz95FNKpkVDmPWaTstVQi0zMN6vyb_5OZ29rnAyC3tjxXAa4baiZOyF/exec", {
+    method: "POST",
+    body: JSON.stringify(payload),
+  })
+  .then(res => res.text())
+  .then(msg => {
+    alert(msg);
+  });
+}
+
 
     function searchRecords() {
       const query = document.getElementById("searchQuery").value;

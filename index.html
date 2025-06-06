@@ -6,101 +6,73 @@
   <title>性能カスタム記録フォーム</title>
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <style>
-    body {
-      font-family: sans-serif;
-      padding: 20px;
-    }
-    .row {
-      margin-bottom: 10px;
-    }
-    label {
-      display: inline-block;
-      width: 100px;
-    }
-    input[type="text"], select {
-      width: 25%;
-    }
-    table {
-      border-collapse: collapse;
-      margin-top: 10px;
-    }
-    th, td {
-      border: 1px solid #ccc;
-      padding: 4px 8px;
-      text-align: center;
-    }
-    .radio-group label,
-    .checkbox-group label {
-      margin-right: 8px;
-    }
+    body { font-family: sans-serif; }
+    label { display: inline-block; width: 120px; }
+    .form-row { margin-bottom: 10px; }
+    .quarter { width: 25%; box-sizing: border-box; }
+    table { border-collapse: collapse; margin-top: 10px; }
+    td, th { border: 1px solid #ccc; padding: 4px 8px; text-align: center; }
+    input[type="radio"], input[type="checkbox"] { margin: 0 4px; }
   </style>
 </head>
 <body>
-  <h2>性能カスタム記録フォーム</h2>
-
   <div id="g_id_onload"
        data-client_id="735792055029-5qb8bcm39qg7g8qrsh60di4pq87afos3.apps.googleusercontent.com"
        data-callback="handleCredentialResponse"
-       data-auto_prompt="false">
+       data-auto_prompt="true">
   </div>
-  <div class="g_id_signin"
-       data-type="standard"
-       data-size="large"
-       data-theme="outline"
-       data-text="sign_in_with"
-       data-shape="rectangular"
-       data-logo_alignment="left">
-  </div>
+  <div class="g_id_signin" data-type="standard"></div>
 
   <div id="form-area" style="display:none;">
+    <h2>性能カスタム記録フォーム</h2>
     <form id="customForm">
-      <div class="row">
-        <label for="userName">記録者名</label>
-        <select id="userName" name="userName" required></select>
+      <div class="form-row">
+        <label for="userName">記入者名:</label>
+        <select id="userName" name="userName" class="quarter" required></select>
       </div>
-      <div class="row">
-        <label for="carNumber">車両番号</label>
-        <input type="text" id="carNumber" name="carNumber" required />
+      <div class="form-row">
+        <label for="vehicleNumber">車両番号:</label>
+        <input type="text" id="vehicleNumber" name="vehicleNumber" class="quarter" required />
       </div>
       <table>
         <tr>
           <th>エンジン</th>
-          <td class="radio-group">
-            <label><input type="radio" name="engine" value="1">T1</label>
-            <label><input type="radio" name="engine" value="2">T2</label>
-            <label><input type="radio" name="engine" value="3">T3</label>
-            <label><input type="radio" name="engine" value="4">T4</label>
-            <label><input type="radio" name="engine" value="5">T5</label>
+          <td colspan="5">
+            <label><input type="radio" name="engine" value="1">1</label>
+            <label><input type="radio" name="engine" value="2">2</label>
+            <label><input type="radio" name="engine" value="3">3</label>
+            <label><input type="radio" name="engine" value="4">4</label>
+            <label><input type="radio" name="engine" value="5">5</label>
           </td>
         </tr>
         <tr>
           <th>ブレーキ</th>
-          <td class="radio-group">
-            <label><input type="radio" name="brake" value="1">T1</label>
-            <label><input type="radio" name="brake" value="2">T2</label>
-            <label><input type="radio" name="brake" value="3">T3</label>
+          <td colspan="3">
+            <label><input type="radio" name="brake" value="1">1</label>
+            <label><input type="radio" name="brake" value="2">2</label>
+            <label><input type="radio" name="brake" value="3">3</label>
           </td>
         </tr>
         <tr>
           <th>トランスミッション</th>
-          <td class="radio-group">
-            <label><input type="radio" name="transmission" value="1">T1</label>
-            <label><input type="radio" name="transmission" value="2">T2</label>
-            <label><input type="radio" name="transmission" value="3">T3</label>
+          <td colspan="3">
+            <label><input type="radio" name="transmission" value="1">1</label>
+            <label><input type="radio" name="transmission" value="2">2</label>
+            <label><input type="radio" name="transmission" value="3">3</label>
           </td>
         </tr>
         <tr>
           <th>サスペンション</th>
-          <td class="radio-group">
-            <label><input type="radio" name="suspension" value="1">T1</label>
-            <label><input type="radio" name="suspension" value="2">T2</label>
-            <label><input type="radio" name="suspension" value="3">T3</label>
-            <label><input type="radio" name="suspension" value="4">T4</label>
+          <td colspan="4">
+            <label><input type="radio" name="suspension" value="1">1</label>
+            <label><input type="radio" name="suspension" value="2">2</label>
+            <label><input type="radio" name="suspension" value="3">3</label>
+            <label><input type="radio" name="suspension" value="4">4</label>
           </td>
         </tr>
         <tr>
           <th>その他</th>
-          <td class="checkbox-group">
+          <td colspan="4">
             <label><input type="checkbox" name="armor">アーマー</label>
             <label><input type="checkbox" name="turbo">ターボ</label>
             <label><input type="checkbox" name="harness">ハーネス</label>
@@ -108,69 +80,69 @@
           </td>
         </tr>
       </table>
-      <br>
+      <br/>
       <button type="submit">送信</button>
     </form>
   </div>
 
   <script>
-    let idToken = '';
-    let email = '';
+    const scriptURL = "https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec";
+
+    let email = "";
 
     function handleCredentialResponse(response) {
-      idToken = response.credential;
-      fetch('https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec', {
-        method: 'POST',
-        body: JSON.stringify({mode: "verify", idToken}),
-      })
-      .then(res => res.json())
-      .then(data => {
-        if (data.status === "ok") {
-          email = data.email;
-          document.querySelector("#form-area").style.display = "block";
-          loadUserList(email);
-        } else {
-          alert("認証されたユーザーではありません。");
-        }
-      });
-    }
-
-    function loadUserList(verifiedEmail) {
-      fetch('https://script.google.com/macros/s/AKfycbwD4QACHCv2BiIhqoHMnnRdxjINe-JRUFJNh1fY0ncmBNQjzGxNIV-G8upBHYi8bXcJ/exec?mode=users')
+      const idToken = response.credential;
+      fetch(`${scriptURL}?mode=verify&idtoken=${idToken}`)
         .then(res => res.json())
-        .then(users => {
-          const select = document.querySelector("#userName");
-          users.forEach(user => {
-            if (user.email === verifiedEmail) {
-              const option = document.createElement("option");
-              option.value = user.name;
-              option.textContent = user.name;
-              select.appendChild(option);
-            }
-          });
+        .then(data => {
+          if (data.status === "ok") {
+            email = data.email;
+            document.querySelector("#form-area").style.display = "block";
+            loadUserList(email);
+          } else {
+            alert("許可されていないユーザーです");
+          }
         });
     }
 
-    document.querySelector("#customForm").addEventListener("submit", (e) => {
-      e.preventDefault();
-      const form = e.target;
-      const formData = new FormData(form);
-      const data = Object.fromEntries(formData.entries());
-      data.armor = form.armor.checked ? "ON" : "OFF";
-      data.turbo = form.turbo.checked ? "ON" : "OFF";
-      data.harness = form.harness.checked ? "ON" : "OFF";
-      data.nos = form.nos.checked ? "ON" : "OFF";
-      data.idToken = idToken;
-      data.mode = "submit";
+    function loadUserList(email) {
+      fetch(`${scriptURL}?mode=users`)
+        .then(res => res.json())
+        .then(users => {
+          const select = document.querySelector("#userName");
+          const user = users.find(u => u.email === email);
+          if (user) {
+            const option = document.createElement("option");
+            option.value = user.name;
+            option.textContent = user.name;
+            select.appendChild(option);
+          }
+        });
+    }
 
-      fetch('https://script.google.com/macros/s/AKfycbyT8DiQ3HDADEsDzptcA_i4k116fYfszL1IBMSfTq-7jOAMOLbWg-QDsoo8EcK3AJ3T/exec', {
-        method: 'POST',
-        body: JSON.stringify(data),
+    document.querySelector("#customForm").addEventListener("submit", function(e) {
+      e.preventDefault();
+      const formData = new FormData(e.target);
+      const data = {
+        vehicleNumber: formData.get("vehicleNumber"),
+        userName: formData.get("userName"),
+        engine: formData.get("engine") || "",
+        brake: formData.get("brake") || "",
+        transmission: formData.get("transmission") || "",
+        suspension: formData.get("suspension") || "",
+        armor: formData.get("armor") ? "ON" : "OFF",
+        turbo: formData.get("turbo") ? "ON" : "OFF",
+        harness: formData.get("harness") ? "ON" : "OFF",
+        nos: formData.get("nos") ? "ON" : "OFF"
+      };
+      fetch(scriptURL, {
+        method: "POST",
+        body: JSON.stringify(data)
       })
-      .then(res => res.text())
-      .then(msg => {
-        alert(msg);
-        form.reset();
+      .then(res => res.json())
+      .then(response => {
+        alert("送信完了！");
+        e.target.reset();
       });
     });
   </script>

@@ -7,76 +7,70 @@
   <style>
     body {
       font-family: Arial, sans-serif;
-      padding: 20px;
       background: #f2f2f2;
       display: flex;
       justify-content: center;
+      padding: 40px 10px;
     }
 
     .container {
-      max-width: 700px;
+      max-width: 800px;
       width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 0 12px rgba(0,0,0,0.1);
     }
 
-    h1 {
+    h1, h2 {
       text-align: center;
     }
 
-    form, .search-section {
-      background: white;
-      padding: 20px;
-      border-radius: 10px;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
-      margin-bottom: 20px;
-      width: 100%;
-    }
-
-    label {
+    form label {
       display: block;
-      margin-top: 10px;
+      margin-top: 15px;
+      font-weight: bold;
     }
 
     .input-field, select {
-      width: 175px;
+      width: 25%;
+      min-width: 180px;
       padding: 8px;
       margin-top: 5px;
       border-radius: 5px;
       border: 1px solid #ccc;
     }
 
-    .radio-table {
+    .radio-table, .checkbox-group {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
-      margin-top: 10px;
-    }
-
-    .radio-table label {
-      white-space: nowrap;
-    }
-
-    .checkbox-group {
-      display: flex;
       gap: 10px;
-      flex-wrap: wrap;
       margin-top: 10px;
+    }
+
+    .radio-table label, .checkbox-group label {
+      background: #f9f9f9;
+      padding: 6px 10px;
+      border-radius: 5px;
+      border: 1px solid #ddd;
     }
 
     button {
-      margin-top: 20px;
-      padding: 10px 20px;
-      border: none;
-      background: #4CAF50;
+      margin-top: 25px;
+      padding: 10px 25px;
+      background-color: #4CAF50;
       color: white;
+      border: none;
       border-radius: 5px;
       cursor: pointer;
     }
 
+    .search-section {
+      margin-top: 40px;
+    }
+
     #result-area {
-      margin-top: 20px;
+      margin-top: 15px;
     }
   </style>
 </head>
@@ -85,55 +79,53 @@
     <h1>性能カスタム記録フォーム</h1>
 
     <form id="customForm">
+      <label for="recorder">記録者名</label>
+      <select class="input-field" id="recorder" name="記録者名" required></select>
+
       <label for="vehicleId">車体番号</label>
       <input class="input-field" type="text" id="vehicleId" name="車体番号" required>
 
       <label for="owner">オーナー名</label>
       <input class="input-field" type="text" id="owner" name="オーナー名" required>
 
-      <label for="recorder">記録者名</label>
-      <select class="input-field" id="recorder" name="記録者名" required></select>
+      <label>エンジン</label>
+      <div class="radio-table">
+        <label><input type="radio" name="エンジン" value="ティア1"> ティア1</label>
+        <label><input type="radio" name="エンジン" value="ティア2"> ティア2</label>
+        <label><input type="radio" name="エンジン" value="ティア3"> ティア3</label>
+        <label><input type="radio" name="エンジン" value="ティア4"> ティア4</label>
+        <label><input type="radio" name="エンジン" value="ティア5"> ティア5</label>
+      </div>
 
-      <div class="section">
-        <label>エンジン</label>
-        <div class="radio-table">
-          <label><input type="radio" name="エンジン" value="ティア1"> ティア1</label>
-          <label><input type="radio" name="エンジン" value="ティア2"> ティア2</label>
-          <label><input type="radio" name="エンジン" value="ティア3"> ティア3</label>
-          <label><input type="radio" name="エンジン" value="ティア4"> ティア4</label>
-          <label><input type="radio" name="エンジン" value="ティア5"> ティア5</label>
-        </div>
+      <label>ブレーキ</label>
+      <div class="radio-table">
+        <label><input type="radio" name="ブレーキ" value="ティア1"> ティア1</label>
+        <label><input type="radio" name="ブレーキ" value="ティア2"> ティア2</label>
+        <label><input type="radio" name="ブレーキ" value="ティア3"> ティア3</label>
+      </div>
 
-        <label>ブレーキ</label>
-        <div class="radio-table">
-          <label><input type="radio" name="ブレーキ" value="ティア1"> ティア1</label>
-          <label><input type="radio" name="ブレーキ" value="ティア2"> ティア2</label>
-          <label><input type="radio" name="ブレーキ" value="ティア3"> ティア3</label>
-        </div>
+      <label>トランスミッション</label>
+      <div class="radio-table">
+        <label><input type="radio" name="トランスミッション" value="ティア1"> ティア1</label>
+        <label><input type="radio" name="トランスミッション" value="ティア2"> ティア2</label>
+        <label><input type="radio" name="トランスミッション" value="ティア3"> ティア3</label>
+      </div>
 
-        <label>トランスミッション</label>
-        <div class="radio-table">
-          <label><input type="radio" name="トランスミッション" value="ティア1"> ティア1</label>
-          <label><input type="radio" name="トランスミッション" value="ティア2"> ティア2</label>
-          <label><input type="radio" name="トランスミッション" value="ティア3"> ティア3</label>
-          <label><input type="radio" name="トランスミッション" value="ティア4"> ティア4</label>
-        </div>
+      <label>サスペンション</label>
+      <div class="radio-table">
+        <label><input type="radio" name="サスペンション" value="ティア1"> ティア1</label>
+        <label><input type="radio" name="サスペンション" value="ティア2"> ティア2</label>
+        <label><input type="radio" name="サスペンション" value="ティア3"> ティア3</label>
+        <label><input type="radio" name="サスペンション" value="ティア4"> ティア4</label>
+        <label><input type="radio" name="サスペンション" value="ティア5"> ティア5</label>
+      </div>
 
-        <label>サスペンション</label>
-        <div class="radio-table">
-          <label><input type="radio" name="サスペンション" value="ティア1"> ティア1</label>
-          <label><input type="radio" name="サスペンション" value="ティア2"> ティア2</label>
-          <label><input type="radio" name="サスペンション" value="ティア3"> ティア3</label>
-          <label><input type="radio" name="サスペンション" value="ティア4"> ティア4</label>
-          <label><input type="radio" name="サスペンション" value="ティア5"> ティア5</label>
-        </div>
-
-        <div class="checkbox-group">
-          <label><input type="checkbox" name="アーマー" value="ON"> アーマー</label>
-          <label><input type="checkbox" name="ターボ" value="ON"> ターボ</label>
-          <label><input type="checkbox" name="ハーネス" value="ON"> ハーネス</label>
-          <label><input type="checkbox" name="NOS" value="ON"> NOS</label>
-        </div>
+      <label>その他</label>
+      <div class="checkbox-group">
+        <label><input type="checkbox" name="アーマー" value="ON"> アーマー</label>
+        <label><input type="checkbox" name="ターボ" value="ON"> ターボ</label>
+        <label><input type="checkbox" name="ハーネス" value="ON"> ハーネス</label>
+        <label><input type="checkbox" name="NOS" value="ON"> NOS</label>
       </div>
 
       <button type="submit">送信</button>
